@@ -3,52 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bubliny z obrázků</title>
+<title>KACHNIČKY</title>
 <style>
 body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: #111;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #74ebd5, #ACB6E5);
   position: relative;
-  font-family: sans-serif;
 }
 
-.bubble {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden; /* nic nevystupuje mimo kruh */
-  background-size: cover;
-  background-position: center;
-  position: absolute;
-  cursor: pointer;
-  animation: floatUp linear infinite;
-}
-
-@keyframes floatUp {
-  0% { transform: translateY(100vh) scale(1); opacity: 1; }
-  80% { opacity: 1; }
-  100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
-}
-
-/* Tlačítko START */
+/* Styl tlačítka START */
 #startBtn {
   position: fixed;
-  top: 20px;
+  top: 40%;
   left: 50%;
-  transform: translateX(-50%);
-  font-size: 24px;
-  padding: 10px 20px;
-  background-color: #ff5733;
-  color: white;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  padding: 20px 40px;
+  background: radial-gradient(circle, #ffafbd, #ffc3a0);
   border: none;
-  cursor: pointer;
+  border-radius: 15px;
+  color: white;
+  font-weight: bold;
   text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
   z-index: 1000;
 }
 
-/* Odpočet */
+#startBtn:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.4);
+}
+
 #countdown {
   position: fixed;
   top: 50%;
@@ -60,16 +50,25 @@ body {
   display: none;
 }
 
-/* Skóre */
-#score {
+#message {
   position: fixed;
-  top: 80px;
+  top: 40%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 24px;
-  color: white;
+  font-size: 28px;
+  color: yellow;
   z-index: 1000;
+  text-align: center;
   display: none;
+}
+
+.duck {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  user-select: none;
 }
 </style>
 </head>
@@ -77,13 +76,32 @@ body {
 
 <button id="startBtn">START</button>
 <div id="countdown"></div>
-<div id="score">Skóre: 0</div>
+<div id="message"></div>
+
+<audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
 const startBtn = document.getElementById('startBtn');
 const countdownEl = document.getElementById('countdown');
-const scoreEl = document.getElementById('score');
-let score = 0;
+const messageEl = document.getElementById('message');
+const popSound = document.getElementById('popSound');
+
+const duckImage = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Duck_icon.svg'; 
+const messages = [
+  "Jdi se napít vody.",
+  "Jdi spinkat.",
+  "Jdi papat.",
+  "Vyhrál jsi: NIC",
+  "Jak jsi věděl co dělat?",
+  "Měl by jsi jít na můj Discord server. Tady je odkaz: https://discord.gg/Cvf2cRtGex",
+  "Prosím odebírej můj YouTube kanál 🥺",
+  "...",
+  "Měl by ses dívat na Anime.",
+  "Nezapomeň dýchat."
+];
+
+let duckWaveCount = 5; // počáteční počet kachniček
+let gameInterval;
 
 startBtn.addEventListener('click', startCountdown);
 
@@ -93,7 +111,7 @@ function startCountdown() {
   
   let count = 3;
   countdownEl.textContent = count;
-  
+
   const interval = setInterval(() => {
     count--;
     if (count > 0) {
@@ -107,49 +125,64 @@ function startCountdown() {
 }
 
 function startGame() {
-  score = 0;
-  scoreEl.textContent = "Skóre: " + score;
-  scoreEl.style.display = 'block';
+  spawnWave();
+  // každé 3 sekundy se přidá nová vlna kachniček (postupně více)
+  gameInterval = setInterval(() => {
+    duckWaveCount = Math.min(duckWaveCount + 2, 35); // max 35 kachniček
+    spawnWave();
+  }, 3000);
+}
 
-  const images = [
-    'https://picsum.photos/80/80?random=1',
-    'https://picsum.photos/80/80?random=2',
-    'https://picsum.photos/80/80?random=3',
-    'https://picsum.photos/80/80?random=4',
-    'https://picsum.photos/80/80?random=5',
-    'https://picsum.photos/80/80?random=6'
-  ];
-
-  function createBubble() {
-    const bubble = document.createElement('div');
-    bubble.classList.add('bubble');
-
-    const img = images[Math.floor(Math.random() * images.length)];
-    bubble.style.backgroundImage = `url(${img})`;
-
-    const size = Math.random() * 60 + 60; // 60–120px pro pohodlné doteky
-    bubble.style.width = `${size}px`;
-    bubble.style.height = `${size}px`;
-    bubble.style.left = Math.random() * (window.innerWidth - size) + 'px';
-    const duration = Math.random() * 5 + 5;
-    bubble.style.animationDuration = `${duration}s`;
-
-    document.body.appendChild(bubble);
-
-    // Kliknutí a dotyk
-    const pop = () => {
-      score++;
-      scoreEl.textContent = "Skóre: " + score;
-      bubble.remove();
-    };
-    bubble.addEventListener('click', pop);
-    bubble.addEventListener('touchstart', pop);
-
-    setTimeout(() => bubble.remove(), duration * 1000);
+function spawnWave() {
+  for(let i = 0; i < duckWaveCount; i++) {
+    createDuck();
   }
+}
 
-  const bubbleInterval = setInterval(createBubble, 500);
-  setTimeout(() => clearInterval(bubbleInterval), 30000);
+function createDuck() {
+  const duck = document.createElement('img');
+  duck.src = duckImage;
+  duck.classList.add('duck');
+  
+  const size = Math.random() * 30 + 30; // 30-60px
+  duck.style.width = `${size}px`;
+  duck.style.height = `${size}px`;
+  document.body.appendChild(duck);
+
+  let x = Math.random() * (window.innerWidth - size);
+  let y = Math.random() * (window.innerHeight - size);
+  duck.style.left = `${x}px`;
+  duck.style.top = `${y}px`;
+
+  // náhodná rychlost
+  let dx = (Math.random() < 0.5 ? -1 : 1) * (Math.random() * 3 + 1);
+  let dy = (Math.random() < 0.5 ? -1 : 1) * (Math.random() * 3 + 1);
+
+  const moveInterval = setInterval(() => {
+    x += dx;
+    y += dy;
+    if(x < 0 || x > window.innerWidth - size) dx *= -1;
+    if(y < 0 || y > window.innerHeight - size) dy *= -1;
+    duck.style.left = `${x}px`;
+    duck.style.top = `${y}px`;
+  }, 16);
+
+  const pop = () => {
+    clearInterval(moveInterval);
+    duck.style.transform = 'scale(2)';
+    duck.style.opacity = '0';
+    popSound.currentTime = 0;
+    popSound.play();
+    setTimeout(() => duck.remove(), 200);
+
+    const msg = messages[Math.floor(Math.random() * messages.length)];
+    messageEl.textContent = msg;
+    messageEl.style.display = 'block';
+    setTimeout(() => messageEl.style.display = 'none', 3000);
+  };
+
+  duck.addEventListener('click', pop);
+  duck.addEventListener('touchstart', pop);
 }
 </script>
 
