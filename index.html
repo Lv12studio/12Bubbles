@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minihra</title>
+<title>12 Bubbles</title> <!-- Upravený title -->
 <style>
 html, body {
   margin: 0;
@@ -16,6 +16,17 @@ html, body {
                     radial-gradient(circle at 70% 70%, #ff00ff1a 10%, transparent 60%),
                     linear-gradient(180deg, #000 0%, #111 100%);
   color: #0ff;
+}
+
+/* Home title */
+#homeTitle {
+  text-align:center;
+  font-size:60px;
+  font-weight:bold;
+  text-transform:uppercase;
+  color:#0ff;
+  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff;
+  margin-top:30px;
 }
 
 /* Tlačítka */
@@ -80,6 +91,7 @@ html, body {
   cursor:pointer;
 }
 
+/* Vzácné bubliny */
 .bubble.rare2x { background: linear-gradient(135deg,#ffff00,#ff9900); color:#000; font-size:28px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset; }
 .bubble.rare144 { background: linear-gradient(135deg,#00ff00,#00aa00); color:#000; font-size:28px; box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset; }
 .bubble.triple { background: linear-gradient(135deg,#ff00ff,#9900ff); color:#fff; font-size:24px; box-shadow:0 0 20px #f0f,0 0 40px #f0f inset; }
@@ -143,13 +155,8 @@ html, body {
   text-shadow: 0 0 5px #ff3,0 0 10px #f00,0 0 20px #ff0,0 0 40px #f00,0 0 80px #ff3;
 }
 
-#easter12 {
-  color:#0ff;
-}
-
-#easter67 {
-  color:#00ccff;
-}
+#easter12 { color:#0ff; }
+#easter67 { color:#00ccff; }
 
 @keyframes fadeShakeNeon {
   0% {opacity:0; transform:translateX(0);}
@@ -174,6 +181,9 @@ html, body {
 </style>
 </head>
 <body>
+
+<!-- Home screen title -->
+<div id="homeTitle">12 BUBBLES</div>
 
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
@@ -212,6 +222,7 @@ html, body {
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
+// JS logika - start, index, Easter eggy
 const startBtn=document.getElementById('startBtn');
 const indexBtn=document.getElementById('indexBtn');
 const indexPanel=document.getElementById('indexPanel');
@@ -247,33 +258,22 @@ function startCountdown(){
 function startGame(){
   score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
   scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
-  spawnBubble();
-  requestAnimationFrame(updateBubbles);
+  // spawn a update bublin doplnit podle logiky
 }
 
 function showEaster(el){
   el.style.display='flex';
   el.style.opacity='1';
-  if(el===easter67){
-    el.style.animation='spiralShrink 5s forwards';
-  } else {
-    el.style.animation='fadeShakeNeon 5s forwards';
-  }
+  if(el===easter67){ el.style.animation='spiralShrink 5s forwards'; }
+  else { el.style.animation='fadeShakeNeon 5s forwards'; }
   setTimeout(()=>{
     el.style.display='none';
     el.style.animation='';
-    showStartButtons();
+    startBtn.style.display='block';
+    indexBtn.style.display='block';
+    scoreContainer.style.display='none';
   },5000);
 }
-
-function showStartButtons(){
-  startBtn.style.display='block';
-  indexBtn.style.display='block';
-  scoreContainer.style.display='none';
-}
-
-/* TODO: doplnit spawn a update bublin podle předchozí logiky s náhodnými typy, rychlostmi, životy, max skóre 999999999, šance pro 12×2, 12², 3×13 */
-
 </script>
 </body>
 </html>
