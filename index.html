@@ -78,11 +78,18 @@ html, body {
   cursor: pointer;
 }
 
-.bubble.rare {
+.bubble.rare2x {
   background: linear-gradient(135deg, #ffff00, #ff9900);
   color: #000;
   font-size: 28px;
   box-shadow: 0 0 20px #ff0, 0 0 40px #ff0 inset;
+}
+
+.bubble.rare144 {
+  background: linear-gradient(135deg, #00ff00, #00aa00);
+  color: #000;
+  font-size: 28px;
+  box-shadow: 0 0 20px #0f0, 0 0 40px #0f0 inset;
 }
 </style>
 </head>
@@ -150,43 +157,47 @@ function spawnBubble() {
   if(!gameRunning) return;
 
   const elapsed = (Date.now() - startTime)/1000;
-  const speedMultiplier = 1 + elapsed/120; // pozvolné zrychlování
+  const speedMultiplier = 1 + elapsed/120;
 
   const bubble = document.createElement('div');
   bubble.classList.add('bubble');
 
-  // 2-4% šance na vzácnou bublinu
-  const rareChance = Math.random();
-  const isRare = rareChance <= 0.04;
-  if(isRare){
-    bubble.classList.add('rare');
+  const chance = Math.random();
+  if(chance <= 0.0025){ // 0,25 % → 12x2
+    bubble.classList.add('rare2x');
     bubble.textContent = "12×2";
+    bubble.dataset.type = "2x";
+  } else if(chance <= 0.0125){ // 1 % → 12²
+    bubble.classList.add('rare144');
+    bubble.textContent = "12²";
+    bubble.dataset.type = "144";
   } else {
     bubble.textContent = "12";
+    bubble.dataset.type = "normal";
   }
 
   const size = Math.random()*60+60;
   bubble.style.width = `${size}px`;
   bubble.style.height = `${size}px`;
-  bubble.style.fontSize = isRare ? `${size/2.5}px` : `${size/3}px`;
+  bubble.style.fontSize = (bubble.dataset.type === "144" ? size/2.5 : size/3) + 'px';
   bubble.style.left = Math.random()*(window.innerWidth-size) + 'px';
   bubble.style.top = (window.innerHeight - size) + 'px';
   
   const speed = (Math.random()*1.5 + 1) * speedMultiplier;
   bubble.dataset.speed = speed;
-  bubble.dataset.rare = isRare ? "true" : "false";
   
   document.body.appendChild(bubble);
   
   const pop = () => {
     if(!gameRunning) return;
-    if(isRare){
+    if(bubble.dataset.type === "2x"){
       score *= 2;
-      if(score > 999999) score = 999999;
+    } else if(bubble.dataset.type === "144"){
+      score += 144;
     } else {
       score++;
-      if(score > 999999) score = 999999;
     }
+    if(score > 999999) score = 999999;
     scoreEl.textContent = "Skóre: " + score;
     if(score > highscore){
       highscore = score;
