@@ -18,9 +18,9 @@ html, body {
   color: #0ff;
 }
 
-#startBtn {
+#startBtn, #indexBtn {
   display: block;
-  margin: 30px auto 10px auto;
+  margin: 15px auto;
   font-size: 28px;
   padding: 15px 35px;
   background: linear-gradient(45deg, #00ffff, #00ff99, #ff00ff);
@@ -76,76 +76,77 @@ html, body {
   cursor: pointer;
 }
 
-.bubble.rare2x {
-  background: linear-gradient(135deg, #ffff00, #ff9900);
-  color: #000;
-  font-size: 28px;
-  box-shadow: 0 0 20px #ff0, 0 0 40px #ff0 inset;
-}
+.bubble.rare2x { background: linear-gradient(135deg, #ffff00, #ff9900); color: #000; font-size: 28px; box-shadow: 0 0 20px #ff0, 0 0 40px #ff0 inset; }
+.bubble.rare144 { background: linear-gradient(135deg, #00ff00, #00aa00); color: #000; font-size: 28px; box-shadow: 0 0 20px #0f0, 0 0 40px #0f0 inset; }
+.bubble.triple { background: linear-gradient(135deg, #ff00ff, #9900ff); color: #fff; font-size: 24px; box-shadow: 0 0 20px #f0f, 0 0 40px #f0f inset; }
 
-.bubble.rare144 {
-  background: linear-gradient(135deg, #00ff00, #00aa00);
-  color: #000;
-  font-size: 28px;
-  box-shadow: 0 0 20px #0f0, 0 0 40px #0f0 inset;
-}
-
-.bubble.triple {
-  background: linear-gradient(135deg, #ff00ff, #9900ff);
-  color: #fff;
-  font-size: 24px;
-  box-shadow: 0 0 20px #f0f, 0 0 40px #f0f inset;
-}
-
-#indexContainer {
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: left;
-  color: #0ff;
+#indexPanel {
+  position: fixed;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 70%;
+  background: rgba(10,10,10,0.95);
+  overflow-y: auto;
+  transition: top 0.5s ease;
+  padding: 20px;
+  z-index: 999;
+  box-shadow: 0 -5px 30px #0ff;
 }
 .indexItem {
   display: flex;
   align-items: center;
   margin: 10px 0;
 }
-.indexItem img {
+.indexItem .bubbleImg {
   width: 60px;
   height: 60px;
   margin-right: 15px;
   border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: #fff;
   border: 2px solid #0ff;
+  box-shadow: 0 0 15px #0ff inset;
+  animation: float 1s infinite alternate;
 }
-.indexItem .desc {
-  flex: 1;
-}
+.indexItem .desc { flex: 1; }
 .indexItem .rarity { font-weight: bold; }
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
 </style>
 </head>
 <body>
 
 <button id="startBtn">START</button>
+<button id="indexBtn">INDEX</button>
 
-<div id="indexContainer">
+<div id="indexPanel">
   <h2>Bubliny Index</h2>
 
   <div class="indexItem">
-    <img src="https://via.placeholder.com/60?text=12" alt="12">
-    <div class="desc"><span class="rarity">Běžná:</span> Standardní bublina, po kliknutí +1 skóre.</div>
+    <div class="bubbleImg">12</div>
+    <div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div>
   </div>
 
   <div class="indexItem">
-    <img src="https://via.placeholder.com/60?text=12x2" alt="12x2">
-    <div class="desc"><span class="rarity">Vzácná 0,25%:</span> Zdvojnásobí momentální skóre.</div>
+    <div class="bubbleImg" style="background: linear-gradient(135deg, #ffff00, #ff9900); color:#000;">12×2</div>
+    <div class="desc"><span class="rarity">Vzácná 0,25%:</span> Zdvojnásobí skóre</div>
   </div>
 
   <div class="indexItem">
-    <img src="https://via.placeholder.com/60?text=12²" alt="12²">
-    <div class="desc"><span class="rarity">Vzácná 1%:</span> Po kliknutí přidá +144 skóre.</div>
+    <div class="bubbleImg" style="background: linear-gradient(135deg, #00ff00, #00aa00); color:#000;">12²</div>
+    <div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div>
   </div>
 
   <div class="indexItem">
-    <img src="https://via.placeholder.com/60?text=3x" alt="Triple Bubble">
-    <div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny najednou.</div>
+    <div class="bubbleImg" style="background: linear-gradient(135deg, #ff00ff, #9900ff);">3×</div>
+    <div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div>
   </div>
 </div>
 
@@ -156,197 +157,126 @@ html, body {
   <div id="lives">Životy: 3</div>
 </div>
 
+<!-- Zvukový efekt -->
+<audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
+
 <script>
 const startBtn = document.getElementById('startBtn');
+const indexBtn = document.getElementById('indexBtn');
+const indexPanel = document.getElementById('indexPanel');
 const countdownEl = document.getElementById('countdown');
 const scoreContainer = document.getElementById('scoreContainer');
 const scoreEl = document.getElementById('score');
 const highscoreEl = document.getElementById('highscore');
 const livesEl = document.getElementById('lives');
+const popSound = document.getElementById('popSound');
 
-let score = 0;
-let highscore = 0;
-let lives = 3;
-let bubbles = [];
-let gameRunning = false;
-let startTime;
+let score = 0, highscore = 0, lives = 3, bubbles = [], gameRunning = false, startTime;
 
 startBtn.addEventListener('click', startCountdown);
-startBtn.addEventListener('touchstart', startCountdown);
+indexBtn.addEventListener('click', ()=> {
+  indexPanel.style.top = indexPanel.style.top==='100%'?'30%':'100%';
+});
 
-function startCountdown() {
-  startBtn.style.display = 'none';
-  countdownEl.style.display = 'block';
-  
-  let count = 3;
-  countdownEl.textContent = count;
-  
-  const interval = setInterval(() => {
+function startCountdown(){
+  startBtn.style.display='none';
+  indexBtn.style.display='none';
+  countdownEl.style.display='block';
+  let count=3;
+  countdownEl.textContent=count;
+  const interval=setInterval(()=>{
     count--;
-    if(count > 0){
-      countdownEl.textContent = count;
-    } else {
-      clearInterval(interval);
-      countdownEl.style.display = 'none';
-      scoreContainer.style.display = 'block';
-      startGame();
-    }
+    if(count>0) countdownEl.textContent=count;
+    else{ clearInterval(interval); countdownEl.style.display='none'; scoreContainer.style.display='block'; startGame();}
   },1000);
 }
 
-function startGame() {
-  score = 0;
-  lives = 3;
-  scoreEl.textContent = "Skóre: " + score;
-  livesEl.textContent = "Životy: " + lives;
-  bubbles = [];
-  gameRunning = true;
-  startTime = Date.now();
+function startGame(){
+  score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
+  scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
   spawnBubble();
   requestAnimationFrame(updateBubbles);
 }
 
-function spawnBubble() {
+function spawnBubble(){
   if(!gameRunning) return;
-
-  const elapsed = (Date.now() - startTime)/1000;
-  const speedMultiplier = 1 + elapsed/120;
-
-  const chance = Math.random();
-  const bubble = document.createElement('div');
+  const elapsed=(Date.now()-startTime)/1000;
+  const speedMultiplier=1+elapsed/120;
+  const chance=Math.random();
+  const bubble=document.createElement('div');
   bubble.classList.add('bubble');
 
-  if(chance <= 0.0025){ // 0,25 % → 12x2
-    bubble.classList.add('rare2x');
-    bubble.textContent = "12×2";
-    bubble.dataset.type = "2x";
-  } else if(chance <= 0.0125){ // 1 % → 12²
-    bubble.classList.add('rare144');
-    bubble.textContent = "12²";
-    bubble.dataset.type = "144";
-  } else if(chance <= 0.0325){ // 2 % → triple bubble
-    bubble.classList.add('triple');
-    bubble.textContent = "3×";
-    bubble.dataset.type = "triple";
-  } else {
-    bubble.textContent = "12";
-    bubble.dataset.type = "normal";
-  }
+  if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
+  else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
+  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×"; bubble.dataset.type="triple"; }
+  else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
 
-  const size = Math.random()*60+60;
-  bubble.style.width = `${size}px`;
-  bubble.style.height = `${size}px`;
-  bubble.style.fontSize = (bubble.dataset.type === "144" ? size/2.5 : size/3) + 'px';
-  bubble.style.left = Math.random()*(window.innerWidth-size) + 'px';
-  bubble.style.top = (window.innerHeight - size) + 'px';
-  
-  const speed = (Math.random()*1.5 + 1) * speedMultiplier;
-  bubble.dataset.speed = speed;
-  
+  const size=Math.random()*60+60;
+  bubble.style.width=`${size}px`;
+  bubble.style.height=`${size}px`;
+  bubble.style.fontSize=(bubble.dataset.type==="144"?size/2.5:size/3)+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
   document.body.appendChild(bubble);
-  
-  const pop = () => {
+
+  const pop=()=>{
     if(!gameRunning) return;
-    if(bubble.dataset.type === "2x"){
-      score *= 2;
-    } else if(bubble.dataset.type === "144"){
-      score += 144;
-    } else if(bubble.dataset.type === "triple"){
-      // spawn 3 bublin najednou
-      for(let i=0;i<3;i++){
-        spawnSingleBubble();
-      }
-    } else {
-      score++;
-    }
-    if(score > 999999) score = 999999;
-    scoreEl.textContent = "Skóre: " + score;
-    if(score > highscore){
-      highscore = score;
-      highscoreEl.textContent = "Nejvyšší skóre: " + highscore;
+    if(['2x','144','triple'].includes(bubble.dataset.type)){
+      popSound.currentTime=0; popSound.play();
     }
     bubble.remove();
-    bubbles = bubbles.filter(b => b !== bubble);
-  };
-  
-  bubble.addEventListener('click', pop);
-  bubble.addEventListener('touchstart', pop);
-  
-  bubbles.push(bubble);
 
-  setTimeout(spawnBubble, 500);
+    if(bubble.dataset.type==="2x") score*=2;
+    else if(bubble.dataset.type==="144") score+=144;
+    else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
+    else score++;
+    if(score>999999999) score=999999999;
+    scoreEl.textContent="Skóre: "+score;
+    if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; }
+    bubbles=bubbles.filter(b=>b!==bubble);
+  };
+
+  bubble.addEventListener('click',pop);
+  bubble.addEventListener('touchstart',pop);
+  bubbles.push(bubble);
+  setTimeout(spawnBubble,500);
 }
 
 function spawnSingleBubble(){
   if(!gameRunning) return;
-
-  const elapsed = (Date.now() - startTime)/1000;
-  const speedMultiplier = 1 + elapsed/120;
-  const bubble = document.createElement('div');
-  bubble.classList.add('bubble');
-  bubble.textContent = "12";
-  bubble.dataset.type = "normal";
-
-  const size = Math.random()*60+60;
-  bubble.style.width = `${size}px`;
-  bubble.style.height = `${size}px`;
-  bubble.style.fontSize = size/3 + 'px';
-  bubble.style.left = Math.random()*(window.innerWidth-size) + 'px';
-  bubble.style.top = (window.innerHeight - size) + 'px';
-  
-  const speed = (Math.random()*1.5 + 1) * speedMultiplier;
-  bubble.dataset.speed = speed;
-  
+  const elapsed=(Date.now()-startTime)/1000;
+  const speedMultiplier=1+elapsed/120;
+  const bubble=document.createElement('div'); bubble.classList.add('bubble');
+  bubble.textContent="12"; bubble.dataset.type="normal";
+  const size=Math.random()*60+60;
+  bubble.style.width=`${size}px`; bubble.style.height=`${size}px`;
+  bubble.style.fontSize=size/3+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
   document.body.appendChild(bubble);
-  
-  const pop = () => {
-    if(!gameRunning) return;
-    score++;
-    if(score > 999999) score = 999999;
-    scoreEl.textContent = "Skóre: " + score;
-    if(score > highscore){
-      highscore = score;
-      highscoreEl.textContent = "Nejvyšší skóre: " + highscore;
-    }
-    bubble.remove();
-    bubbles = bubbles.filter(b => b !== bubble);
-  };
-  
-  bubble.addEventListener('click', pop);
-  bubble.addEventListener('touchstart', pop);
+
+  const pop=()=>{ if(!gameRunning) return; score++; if(score>999999999) score=999999999; scoreEl.textContent="Skóre: "+score; if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; } bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);}
+  bubble.addEventListener('click',pop); bubble.addEventListener('touchstart',pop);
   bubbles.push(bubble);
 }
 
-function updateBubbles() {
+function updateBubbles(){
   if(!gameRunning) return;
-  
-  bubbles.forEach(bubble => {
-    const top = parseFloat(bubble.style.top);
-    bubble.style.top = top - parseFloat(bubble.dataset.speed) + 'px';
-    
-    if(top <= 0){
-      lives--;
-      livesEl.textContent = "Životy: " + lives;
-      bubble.remove();
-      bubbles = bubbles.filter(b => b !== bubble);
-      if(lives <= 0){
-        endGame();
-      }
-    }
+  bubbles.forEach(bubble=>{
+    const top=parseFloat(bubble.style.top);
+    bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
+    if(top<=0){ lives--; livesEl.textContent="Životy: "+lives; bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble); if(lives<=0) endGame();}
   });
-  
   requestAnimationFrame(updateBubbles);
 }
 
-function endGame() {
-  gameRunning = false;
-  bubbles.forEach(b => b.remove());
-  bubbles = [];
-  alert("Konec hry! Skóre: " + score);
-  startBtn.style.display = 'block';
-  scoreContainer.style.display = 'none';
+function endGame(){
+  gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
+  alert("Konec hry! Skóre: "+score);
+  startBtn.style.display='block'; indexBtn.style.display='block'; scoreContainer.style.display='none';
 }
 </script>
-
 </body>
 </html>
