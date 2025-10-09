@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minihra</title>
+<title>12 BUBBLES</title>
 <style>
 html, body {
   margin: 0;
@@ -18,7 +18,41 @@ html, body {
   color: #0ff;
 }
 
-/* --- HOME SCREEN BUTTONS --- */
+/* ---------- HOME SCREEN ---------- */
+#homeScreen {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: filter 0.4s ease, opacity 0.4s ease;
+}
+
+/* Blur effect class */
+.blurred {
+  filter: blur(8px) brightness(0.4);
+}
+
+/* Title */
+#title {
+  font-size: 64px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #0ff;
+  text-shadow: 0 0 15px #0ff, 0 0 30px #0ff, 0 0 50px #0ff;
+  letter-spacing: 3px;
+  margin-bottom: 40px;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% { text-shadow: 0 0 15px #0ff, 0 0 30px #0ff, 0 0 50px #0ff; }
+  50% { text-shadow: 0 0 25px #00ffff, 0 0 45px #00ffcc, 0 0 70px #0ff; }
+}
+
+/* Buttons */
 #startBtn, #indexBtn {
   display: block;
   margin: 15px auto;
@@ -32,61 +66,22 @@ html, body {
   text-transform: uppercase;
   cursor: pointer;
   box-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 60px #0ff;
-  z-index: 1000;
+  z-index: 2;
   transition: transform 0.2s;
 }
 #startBtn:hover, #indexBtn:hover { transform: scale(1.05); }
 
-/* --- COUNTDOWN --- */
-#countdown {
+/* Version text */
+#version {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 80px;
-  color: #0ff;
-  text-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
-  z-index: 1001;
-  display: none;
+  bottom: 10px;
+  right: 15px;
+  font-size: 16px;
+  color: rgba(255,255,255,0.3);
+  z-index: 2;
 }
 
-/* --- SCORE CONTAINER --- */
-#scoreContainer {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1001;
-  text-align: center;
-  display: none;
-}
-#highscore { font-size: 20px; color: #ff0; margin-bottom: 5px; }
-#score { font-size: 28px; color: #0ff; }
-#lives { font-size: 20px; color: #f00; margin-top: 5px; }
-
-/* --- BUBBLES --- */
-.bubble {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
-  font-weight: bold;
-  color: #fff;
-  background: linear-gradient(135deg, #00ffff, #ff00ff);
-  border: 2px solid #0ff;
-  box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset;
-  position: absolute;
-  cursor: pointer;
-}
-
-.bubble.rare2x { background: linear-gradient(135deg, #ffff00, #ff9900); color: #000; font-size: 28px; box-shadow: 0 0 20px #ff0, 0 0 40px #ff0 inset; }
-.bubble.rare144 { background: linear-gradient(135deg, #00ff00, #00aa00); color: #000; font-size: 28px; box-shadow: 0 0 20px #0f0, 0 0 40px #0f0 inset; }
-.bubble.triple { background: linear-gradient(135deg, #ff00ff, #9900ff); color: #fff; font-size: 24px; box-shadow: 0 0 20px #f0f, 0 0 40px #f0f inset; }
-
-/* --- INDEX PANEL --- */
+/* ---------- INDEX PANEL ---------- */
 #indexPanel {
   position: fixed;
   top: 100%;
@@ -96,21 +91,18 @@ html, body {
   background: rgba(10,10,10,0.95);
   overflow-y: auto;
   transition: top 0.5s ease;
-  padding: 20px;
-  z-index: 999;
+  padding: 30px 20px;
+  z-index: 10;
   box-shadow: 0 -5px 30px #0ff;
   color: #0ff;
 }
 
-#indexPanel h2 {
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 28px;
-  margin-top: 0;
+/* When index is visible */
+#indexPanel.active {
+  top: 30%;
 }
 
-/* --- CLOSE BUTTON --- */
+/* Close button */
 #closeIndex {
   position: absolute;
   top: 15px;
@@ -123,6 +115,15 @@ html, body {
 }
 #closeIndex:hover { transform: scale(1.3); color: #ff00ff; }
 
+#indexPanel h2 {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 28px;
+  margin: 0 0 20px 0;
+}
+
+/* Bubbles in index */
 .indexItem {
   display: flex;
   align-items: center;
@@ -145,14 +146,22 @@ html, body {
 .indexItem .desc { flex: 1; }
 .indexItem .rarity { font-weight: bold; }
 
-@keyframes float { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+@keyframes float {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
 </style>
 </head>
 <body>
 
-<!-- HOME BUTTONS -->
-<button id="startBtn">START</button>
-<button id="indexBtn">INDEX</button>
+<!-- HOME SCREEN -->
+<div id="homeScreen">
+  <h1 id="title">12 BUBBLES</h1>
+  <button id="startBtn">START</button>
+  <button id="indexBtn">INDEX</button>
+</div>
+
+<div id="version">ALFA 0.11.2 rev. 2</div>
 
 <!-- INDEX PANEL -->
 <div id="indexPanel">
@@ -164,30 +173,38 @@ html, body {
   </div>
   <div class="indexItem">
     <div class="bubbleImg" style="background: linear-gradient(135deg, #ffff00, #ff9900); color:#000;">12×2</div>
-    <div class="desc"><span class="rarity">Vzácná 0,25%:</span> Zdvojnásobí skóre</div>
+    <div class="desc"><span class="rarity">Vzácná 0,25 %:</span> Zdvojnásobí skóre</div>
   </div>
   <div class="indexItem">
     <div class="bubbleImg" style="background: linear-gradient(135deg, #00ff00, #00aa00); color:#000;">12²</div>
-    <div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div>
+    <div class="desc"><span class="rarity">Vzácná 1 %:</span> +144 skóre</div>
   </div>
   <div class="indexItem">
     <div class="bubbleImg" style="background: linear-gradient(135deg, #ff00ff, #9900ff);">3×12</div>
-    <div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div>
+    <div class="desc"><span class="rarity">Vzácná 2 %:</span> Spawnuje 3 bubliny</div>
   </div>
 </div>
 
 <script>
+const homeScreen = document.getElementById('homeScreen');
 const indexBtn = document.getElementById('indexBtn');
 const indexPanel = document.getElementById('indexPanel');
 const closeIndex = document.getElementById('closeIndex');
 
-// otevření / zavření indexu
 indexBtn.addEventListener('click', () => {
-  indexPanel.style.top = indexPanel.style.top === '100%' ? '30%' : '100%';
+  const isOpen = indexPanel.classList.contains('active');
+  if (!isOpen) {
+    indexPanel.classList.add('active');
+    homeScreen.classList.add('blurred');
+  } else {
+    indexPanel.classList.remove('active');
+    homeScreen.classList.remove('blurred');
+  }
 });
 
 closeIndex.addEventListener('click', () => {
-  indexPanel.style.top = '100%';
+  indexPanel.classList.remove('active');
+  homeScreen.classList.remove('blurred');
 });
 </script>
 
