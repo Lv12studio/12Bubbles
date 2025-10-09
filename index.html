@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 Bubbles</title>
+<title>12 BUBBLES</title>
 <style>
 html, body {
   margin: 0;
@@ -11,29 +11,37 @@ html, body {
   height: 100vh;
   overflow: hidden;
   font-family: monospace;
-  background-color: #050505;
+  background-color: #0a0a0a;
   background-image: radial-gradient(circle at 30% 30%, #0ff1 10%, transparent 60%),
                     radial-gradient(circle at 70% 70%, #ff00ff1a 10%, transparent 60%),
                     linear-gradient(180deg, #000 0%, #111 100%);
   color: #0ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.4s ease, opacity 0.4s ease;
 }
 
-#homeScreen {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
+/* --- TITLE --- */
 #title {
-  font-size: 60px;
+  font-size: 64px;
+  text-transform: uppercase;
   font-weight: bold;
+  color: #0ff;
+  text-shadow: 0 0 15px #0ff, 0 0 30px #0ff, 0 0 50px #0ff;
+  letter-spacing: 3px;
   margin-bottom: 40px;
-  text-shadow: 0 0 15px #0ff, 0 0 40px #0ff;
+  animation: glowPulse 3s ease-in-out infinite;
 }
 
-button {
+@keyframes glowPulse {
+  0%, 100% { text-shadow: 0 0 15px #0ff, 0 0 30px #0ff, 0 0 50px #0ff; }
+  50% { text-shadow: 0 0 25px #00ffff, 0 0 45px #00ffcc, 0 0 70px #0ff; }
+}
+
+/* --- BUTTONS --- */
+#startBtn, #indexBtn {
   display: block;
   margin: 15px auto;
   font-size: 28px;
@@ -45,57 +53,18 @@ button {
   font-weight: bold;
   text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
-  transition: transform 0.2s ease;
+  box-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 60px #0ff;
+  z-index: 1000;
+  transition: transform 0.2s;
 }
-button:hover { transform: scale(1.05); }
+#startBtn:hover, #indexBtn:hover { transform: scale(1.05); }
 
-#countdown {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 80px;
-  color: #0ff;
-  text-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
-  z-index: 1001;
-  display: none;
+/* --- HOME SCREEN WRAPPER (rozmazává se) --- */
+#homeScreen {
+  transition: filter 0.4s ease, opacity 0.4s ease;
 }
 
-#scoreContainer {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1001;
-  text-align: center;
-  display: none;
-}
-#highscore { font-size: 20px; color: #ff0; margin-bottom: 5px; }
-#score { font-size: 28px; color: #0ff; }
-#lives { font-size: 20px; color: #f00; margin-top: 5px; }
-
-.bubble {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
-  font-weight: bold;
-  color: #fff;
-  background: linear-gradient(135deg, #00ffff, #ff00ff);
-  border: 2px solid #0ff;
-  box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset;
-  position: absolute;
-  cursor: pointer;
-}
-
-.bubble.rare2x { background: linear-gradient(135deg, #ffff00, #ff9900); color: #000; }
-.bubble.rare144 { background: linear-gradient(135deg, #00ff00, #00aa00); color: #000; }
-.bubble.triple { background: linear-gradient(135deg, #ff00ff, #9900ff); color: #fff; }
-
+/* --- INDEX PANEL --- */
 #indexPanel {
   position: fixed;
   top: 100%;
@@ -108,7 +77,31 @@ button:hover { transform: scale(1.05); }
   padding: 20px;
   z-index: 999;
   box-shadow: 0 -5px 30px #0ff;
+  color: #0ff;
 }
+
+#indexPanel h2 {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 28px;
+  margin-top: 0;
+}
+
+/* --- CLOSE BUTTON --- */
+#closeIndex {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  color: #0ff;
+  cursor: pointer;
+  text-shadow: 0 0 10px #0ff;
+  transition: transform 0.2s;
+}
+#closeIndex:hover { transform: scale(1.3); color: #ff00ff; }
+
+/* --- INDEX ITEMS --- */
 .indexItem {
   display: flex;
   align-items: center;
@@ -126,61 +119,32 @@ button:hover { transform: scale(1.05); }
   color: #fff;
   border: 2px solid #0ff;
   box-shadow: 0 0 15px #0ff inset;
+  animation: float 1s infinite alternate;
 }
 .indexItem .desc { flex: 1; }
 .indexItem .rarity { font-weight: bold; }
 
-/* Ending screen */
-#endScreen {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.9);
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #0ff;
-  font-size: 40px;
-  z-index: 1500;
-  text-align: center;
-}
-#continueBtn {
-  margin-top: 30px;
-  font-size: 26px;
-  padding: 15px 40px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  color: white;
-  background: linear-gradient(45deg, #00ffff, #00ff99, #ff00ff);
-  box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
-}
+@keyframes float { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
 
-/* Verze v rohu */
-#versionLabel {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  font-size: 16px;
-  color: rgba(255,255,255,0.3);
-  font-weight: bold;
-  z-index: 1002;
+/* --- BLUR EFFECT CLASS --- */
+.blurred {
+  filter: blur(8px) brightness(0.4);
 }
 </style>
 </head>
 <body>
 
-<div id="versionLabel">Alfa 0.12.0</div>
-
+<!-- HOME SCREEN -->
 <div id="homeScreen">
-  <div id="title">12 Bubbles</div>
+  <h1 id="title">12 BUBBLES</h1>
   <button id="startBtn">START</button>
   <button id="indexBtn">INDEX</button>
 </div>
 
+<!-- INDEX PANEL -->
 <div id="indexPanel">
-  <h2>Bubliny Index</h2>
+  <span id="closeIndex">✖</span>
+  <h2>BUBLINY INDEX</h2>
   <div class="indexItem">
     <div class="bubbleImg">12</div>
     <div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div>
@@ -199,143 +163,23 @@ button:hover { transform: scale(1.05); }
   </div>
 </div>
 
-<div id="countdown"></div>
-<div id="scoreContainer">
-  <div id="highscore">Nejvyšší skóre: 0</div>
-  <div id="score">Skóre: 0</div>
-  <div id="lives">Životy: 3</div>
-</div>
-
-<div id="endScreen">
-  <div id="finalScoreText"></div>
-  <button id="continueBtn">POKRAČOVAT</button>
-</div>
-
-<audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
-
 <script>
-const startBtn = document.getElementById('startBtn');
 const indexBtn = document.getElementById('indexBtn');
 const indexPanel = document.getElementById('indexPanel');
-const countdownEl = document.getElementById('countdown');
-const scoreContainer = document.getElementById('scoreContainer');
-const scoreEl = document.getElementById('score');
-const highscoreEl = document.getElementById('highscore');
-const livesEl = document.getElementById('lives');
-const popSound = document.getElementById('popSound');
-const endScreen = document.getElementById('endScreen');
-const finalScoreText = document.getElementById('finalScoreText');
-const continueBtn = document.getElementById('continueBtn');
+const closeIndex = document.getElementById('closeIndex');
 const homeScreen = document.getElementById('homeScreen');
 
-let score = 0, highscore = 0, lives = 3, bubbles = [], gameRunning = false, startTime;
-
-indexBtn.addEventListener('click', ()=> {
-  indexPanel.style.top = indexPanel.style.top==='100%' ? '30%' : '100%';
+indexBtn.addEventListener('click', () => {
+  const isOpen = indexPanel.style.top === '30%';
+  indexPanel.style.top = isOpen ? '100%' : '30%';
+  homeScreen.classList.toggle('blurred', !isOpen);
 });
 
-startBtn.addEventListener('click', startCountdown);
-
-continueBtn.addEventListener('click', ()=>{
-  endScreen.style.display='none';
-  homeScreen.style.display='block';
-  document.getElementById('versionLabel').style.display='block';
+closeIndex.addEventListener('click', () => {
+  indexPanel.style.top = '100%';
+  homeScreen.classList.remove('blurred');
 });
-
-function startCountdown(){
-  homeScreen.style.display='none';
-  document.getElementById('versionLabel').style.display='none';
-  countdownEl.style.display='block';
-  let count=3;
-  countdownEl.textContent=count;
-  const interval=setInterval(()=>{
-    count--;
-    if(count>0) countdownEl.textContent=count;
-    else{ clearInterval(interval); countdownEl.style.display='none'; scoreContainer.style.display='block'; startGame();}
-  },1000);
-}
-
-function startGame(){
-  score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
-  scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
-  spawnBubble();
-  requestAnimationFrame(updateBubbles);
-}
-
-function spawnBubble(){
-  if(!gameRunning) return;
-  const elapsed=(Date.now()-startTime)/1000;
-  const speedMultiplier=1+elapsed/120;
-  const chance=Math.random();
-  const bubble=document.createElement('div');
-  bubble.classList.add('bubble');
-
-  if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
-  else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
-  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
-  else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
-
-  const size=Math.random()*60+60;
-  bubble.style.width=`${size}px`;
-  bubble.style.height=`${size}px`;
-  bubble.style.fontSize=(bubble.dataset.type==="144"?size/2.5:size/3)+'px';
-  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
-  bubble.style.top=(window.innerHeight-size)+'px';
-  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
-  document.body.appendChild(bubble);
-
-  const pop=()=>{
-    if(!gameRunning) return;
-    if(['2x','144','triple'].includes(bubble.dataset.type)) popSound.currentTime=0, popSound.play();
-    bubble.remove();
-
-    if(bubble.dataset.type==="2x") score*=2;
-    else if(bubble.dataset.type==="144") score+=144;
-    else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
-    else score++;
-    if(score>999999999) score=999999999;
-    scoreEl.textContent="Skóre: "+score;
-    if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; }
-    bubbles=bubbles.filter(b=>b!==bubble);
-  };
-
-  bubble.addEventListener('click',pop);
-  bubbles.push(bubble);
-  setTimeout(spawnBubble,500);
-}
-
-function spawnSingleBubble(){
-  const bubble=document.createElement('div');
-  bubble.classList.add('bubble');
-  bubble.textContent="12"; bubble.dataset.type="normal";
-  const size=Math.random()*60+60;
-  bubble.style.width=`${size}px`; bubble.style.height=`${size}px`;
-  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
-  bubble.style.top=(window.innerHeight-size)+'px';
-  bubble.dataset.speed=(Math.random()*1.5+1)*(1+(Date.now()-startTime)/120000);
-  document.body.appendChild(bubble);
-  bubble.addEventListener('click',()=>{ score++; scoreEl.textContent="Skóre: "+score; bubble.remove(); });
-  bubbles.push(bubble);
-}
-
-function updateBubbles(){
-  if(!gameRunning) return;
-  bubbles.forEach(bubble=>{
-    const top=parseFloat(bubble.style.top);
-    bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
-    if(top<=0){ lives--; livesEl.textContent="Životy: "+lives; bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble); if(lives<=0) endGame(); }
-  });
-  requestAnimationFrame(updateBubbles);
-}
-
-function endGame(){
-  gameRunning=false;
-  bubbles.forEach(b=>b.remove());
-  bubbles=[];
-  scoreContainer.style.display='none';
-  finalScoreText.textContent="Tvé skóre: "+score;
-  endScreen.style.display='flex';
-}
 </script>
+
 </body>
 </html>
