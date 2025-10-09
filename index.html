@@ -18,7 +18,6 @@ html, body {
   color: #0ff;
 }
 
-/* START tlačítko uprostřed */
 #startBtn {
   position: fixed;
   top: 50%;
@@ -35,14 +34,8 @@ html, body {
   cursor: pointer;
   box-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 60px #0ff;
   z-index: 1000;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-#startBtn:hover {
-  transform: translate(-50%, -50%) scale(1.1);
-  box-shadow: 0 0 30px #0ff, 0 0 60px #0ff, 0 0 90px #0ff;
 }
 
-/* Odpočet před startem */
 #countdown {
   position: fixed;
   top: 50%;
@@ -55,7 +48,6 @@ html, body {
   display: none;
 }
 
-/* Skóre, nejvyšší skóre a životy */
 #scoreContainer {
   position: fixed;
   top: 20px;
@@ -65,25 +57,10 @@ html, body {
   text-align: center;
   display: none;
 }
-#highscore {
-  font-size: 20px;
-  color: #ff0;
-  text-shadow: 0 0 10px #ff0, 0 0 20px #ff0;
-  margin-bottom: 5px;
-}
-#score {
-  font-size: 28px;
-  color: #0ff;
-  text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-}
-#lives {
-  font-size: 20px;
-  color: #f00;
-  text-shadow: 0 0 10px #f00, 0 0 20px #f00;
-  margin-top: 5px;
-}
+#highscore { font-size: 20px; color: #ff0; margin-bottom: 5px; }
+#score { font-size: 28px; color: #0ff; }
+#lives { font-size: 20px; color: #f00; margin-top: 5px; }
 
-/* Bubliny s číslem 12 */
 .bubble {
   width: 80px;
   height: 80px;
@@ -99,11 +76,6 @@ html, body {
   box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset;
   position: absolute;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.bubble:hover {
-  transform: scale(1.2) rotate(10deg);
-  box-shadow: 0 0 25px #0ff, 0 0 50px #0ff inset;
 }
 </style>
 </head>
@@ -128,7 +100,8 @@ const livesEl = document.getElementById('lives');
 let score = 0;
 let highscore = 0;
 let lives = 3;
-let bubbleInterval;
+let bubbles = [];
+let gameRunning = false;
 
 startBtn.addEventListener('click', startCountdown);
 startBtn.addEventListener('touchstart', startCountdown);
@@ -142,7 +115,7 @@ function startCountdown() {
   
   const interval = setInterval(() => {
     count--;
-    if (count > 0) {
+    if(count > 0){
       countdownEl.textContent = count;
     } else {
       clearInterval(interval);
@@ -150,7 +123,7 @@ function startCountdown() {
       scoreContainer.style.display = 'block';
       startGame();
     }
-  }, 1000);
+  },1000);
 }
 
 function startGame() {
@@ -158,64 +131,78 @@ function startGame() {
   lives = 3;
   scoreEl.textContent = "Skóre: " + score;
   livesEl.textContent = "Životy: " + lives;
+  bubbles = [];
+  gameRunning = true;
+  spawnBubbles();
+  requestAnimationFrame(updateBubbles);
+}
 
-  function createBubble() {
-    const bubble = document.createElement('div');
-    bubble.classList.add('bubble');
-    bubble.textContent = "12";
+function spawnBubbles() {
+  if(!gameRunning) return;
+  
+  const bubble = document.createElement('div');
+  bubble.classList.add('bubble');
+  bubble.textContent = "12";
+  
+  const size = Math.random()*60+60;
+  bubble.style.width = `${size}px`;
+  bubble.style.height = `${size}px`;
+  bubble.style.fontSize = `${size/3}px`;
+  bubble.style.left = Math.random()*(window.innerWidth-size) + 'px';
+  bubble.style.top = (window.innerHeight - size) + 'px';
+  
+  const speed = Math.random()*1.5 + 1; // rychlost pohybu
+  bubble.dataset.speed = speed;
+  
+  document.body.appendChild(bubble);
+  
+  const pop = () => {
+    if(!gameRunning) return;
+    score++;
+    if(score > 999999) score = 999999;
+    scoreEl.textContent = "Skóre: " + score;
+    if(score > highscore){
+      highscore = score;
+      highscoreEl.textContent = "Nejvyšší skóre: " + highscore;
+    }
+    bubble.remove();
+    bubbles = bubbles.filter(b => b !== bubble);
+  };
+  
+  bubble.addEventListener('click', pop);
+  bubble.addEventListener('touchstart', pop);
+  
+  bubbles.push(bubble);
+  
+  setTimeout(spawnBubbles, 500);
+}
 
-    const size = Math.random() * 60 + 60;
-    bubble.style.width = `${size}px`;
-    bubble.style.height = `${size}px`;
-    bubble.style.fontSize = `${size / 3}px`;
-    bubble.style.left = Math.random() * (window.innerWidth - size) + 'px';
-    bubble.style.top = window.innerHeight - size + 'px';
-
-    const duration = Math.random() < 0.2 ? Math.random() * 3 + 2 : Math.random() * 5 + 5;
-    bubble.style.transition = `top ${duration}s linear`;
-
-    document.body.appendChild(bubble);
-
-    // animace posunu nahoru
-    setTimeout(() => {
-      bubble.style.top = '-100px';
-    }, 50);
-
-    // Kontrola stropu
-    const ceilingCheck = setInterval(() => {
-      const rect = bubble.getBoundingClientRect();
-      if(rect.top <= 0){
-        lives--;
-        livesEl.textContent = "Životy: " + lives;
-        bubble.remove();
-        clearInterval(ceilingCheck);
-        if(lives <= 0){
-          endGame();
-        }
-      }
-    }, 30);
-
-    // Kliknutí
-    const pop = () => {
-      score++;
-      if(score > 999999) score = 999999;
-      scoreEl.textContent = "Skóre: " + score;
-      if(score > highscore){
-        highscore = score;
-        highscoreEl.textContent = "Nejvyšší skóre: " + highscore;
-      }
-      clearInterval(ceilingCheck);
+function updateBubbles() {
+  if(!gameRunning) return;
+  
+  bubbles.forEach(bubble => {
+    const top = parseFloat(bubble.style.top);
+    bubble.style.top = top - parseFloat(bubble.dataset.speed) + 'px';
+    
+    if(top <= 0){
+      // dosáhla stropu → odečti život
+      lives--;
+      livesEl.textContent = "Životy: " + lives;
       bubble.remove();
-    };
-    bubble.addEventListener('click', pop);
-    bubble.addEventListener('touchstart', pop);
-  }
-
-  bubbleInterval = setInterval(createBubble, 500);
+      bubbles = bubbles.filter(b => b !== bubble);
+      if(lives <= 0){
+        endGame();
+      }
+    }
+  });
+  
+  requestAnimationFrame(updateBubbles);
 }
 
 function endGame() {
-  clearInterval(bubbleInterval);
+  gameRunning = false;
+  bubbles.forEach(b => b.remove());
+  bubbles = [];
   alert("Konec hry! Skóre: " + score);
   startBtn.style.display = 'block';
   scoreContainer.style.display = 'none';
