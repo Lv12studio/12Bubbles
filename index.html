@@ -19,10 +19,8 @@ html, body {
 }
 
 #startBtn {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: block;
+  margin: 30px auto 10px auto;
   font-size: 28px;
   padding: 15px 35px;
   background: linear-gradient(45deg, #00ffff, #00ff99, #ff00ff);
@@ -91,11 +89,66 @@ html, body {
   font-size: 28px;
   box-shadow: 0 0 20px #0f0, 0 0 40px #0f0 inset;
 }
+
+.bubble.triple {
+  background: linear-gradient(135deg, #ff00ff, #9900ff);
+  color: #fff;
+  font-size: 24px;
+  box-shadow: 0 0 20px #f0f, 0 0 40px #f0f inset;
+}
+
+#indexContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+  color: #0ff;
+}
+.indexItem {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+.indexItem img {
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
+  border-radius: 50%;
+  border: 2px solid #0ff;
+}
+.indexItem .desc {
+  flex: 1;
+}
+.indexItem .rarity { font-weight: bold; }
 </style>
 </head>
 <body>
 
 <button id="startBtn">START</button>
+
+<div id="indexContainer">
+  <h2>Bubliny Index</h2>
+
+  <div class="indexItem">
+    <img src="https://via.placeholder.com/60?text=12" alt="12">
+    <div class="desc"><span class="rarity">Běžná:</span> Standardní bublina, po kliknutí +1 skóre.</div>
+  </div>
+
+  <div class="indexItem">
+    <img src="https://via.placeholder.com/60?text=12x2" alt="12x2">
+    <div class="desc"><span class="rarity">Vzácná 0,25%:</span> Zdvojnásobí momentální skóre.</div>
+  </div>
+
+  <div class="indexItem">
+    <img src="https://via.placeholder.com/60?text=12²" alt="12²">
+    <div class="desc"><span class="rarity">Vzácná 1%:</span> Po kliknutí přidá +144 skóre.</div>
+  </div>
+
+  <div class="indexItem">
+    <img src="https://via.placeholder.com/60?text=3x" alt="Triple Bubble">
+    <div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny najednou.</div>
+  </div>
+</div>
+
 <div id="countdown"></div>
 <div id="scoreContainer">
   <div id="highscore">Nejvyšší skóre: 0</div>
@@ -159,10 +212,10 @@ function spawnBubble() {
   const elapsed = (Date.now() - startTime)/1000;
   const speedMultiplier = 1 + elapsed/120;
 
+  const chance = Math.random();
   const bubble = document.createElement('div');
   bubble.classList.add('bubble');
 
-  const chance = Math.random();
   if(chance <= 0.0025){ // 0,25 % → 12x2
     bubble.classList.add('rare2x');
     bubble.textContent = "12×2";
@@ -171,6 +224,10 @@ function spawnBubble() {
     bubble.classList.add('rare144');
     bubble.textContent = "12²";
     bubble.dataset.type = "144";
+  } else if(chance <= 0.0325){ // 2 % → triple bubble
+    bubble.classList.add('triple');
+    bubble.textContent = "3×";
+    bubble.dataset.type = "triple";
   } else {
     bubble.textContent = "12";
     bubble.dataset.type = "normal";
@@ -194,6 +251,11 @@ function spawnBubble() {
       score *= 2;
     } else if(bubble.dataset.type === "144"){
       score += 144;
+    } else if(bubble.dataset.type === "triple"){
+      // spawn 3 bublin najednou
+      for(let i=0;i<3;i++){
+        spawnSingleBubble();
+      }
     } else {
       score++;
     }
@@ -213,6 +275,46 @@ function spawnBubble() {
   bubbles.push(bubble);
 
   setTimeout(spawnBubble, 500);
+}
+
+function spawnSingleBubble(){
+  if(!gameRunning) return;
+
+  const elapsed = (Date.now() - startTime)/1000;
+  const speedMultiplier = 1 + elapsed/120;
+  const bubble = document.createElement('div');
+  bubble.classList.add('bubble');
+  bubble.textContent = "12";
+  bubble.dataset.type = "normal";
+
+  const size = Math.random()*60+60;
+  bubble.style.width = `${size}px`;
+  bubble.style.height = `${size}px`;
+  bubble.style.fontSize = size/3 + 'px';
+  bubble.style.left = Math.random()*(window.innerWidth-size) + 'px';
+  bubble.style.top = (window.innerHeight - size) + 'px';
+  
+  const speed = (Math.random()*1.5 + 1) * speedMultiplier;
+  bubble.dataset.speed = speed;
+  
+  document.body.appendChild(bubble);
+  
+  const pop = () => {
+    if(!gameRunning) return;
+    score++;
+    if(score > 999999) score = 999999;
+    scoreEl.textContent = "Skóre: " + score;
+    if(score > highscore){
+      highscore = score;
+      highscoreEl.textContent = "Nejvyšší skóre: " + highscore;
+    }
+    bubble.remove();
+    bubbles = bubbles.filter(b => b !== bubble);
+  };
+  
+  bubble.addEventListener('click', pop);
+  bubble.addEventListener('touchstart', pop);
+  bubbles.push(bubble);
 }
 
 function updateBubbles() {
