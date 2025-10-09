@@ -20,7 +20,6 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: filter 0.4s ease, opacity 0.4s ease;
 }
 
 /* --- TITLE --- */
@@ -58,11 +57,6 @@ html, body {
   transition: transform 0.2s;
 }
 #startBtn:hover, #indexBtn:hover { transform: scale(1.05); }
-
-/* --- HOME SCREEN WRAPPER (rozmazává se) --- */
-#homeScreen {
-  transition: filter 0.4s ease, opacity 0.4s ease;
-}
 
 /* --- INDEX PANEL --- */
 #indexPanel {
@@ -125,21 +119,14 @@ html, body {
 .indexItem .rarity { font-weight: bold; }
 
 @keyframes float { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
-
-/* --- BLUR EFFECT CLASS --- */
-.blurred {
-  filter: blur(8px) brightness(0.4);
-}
 </style>
 </head>
 <body>
 
 <!-- HOME SCREEN -->
-<div id="homeScreen">
-  <h1 id="title">12 BUBBLES</h1>
-  <button id="startBtn">START</button>
-  <button id="indexBtn">INDEX</button>
-</div>
+<h1 id="title">12 BUBBLES</h1>
+<button id="startBtn">START</button>
+<button id="indexBtn">INDEX</button>
 
 <!-- INDEX PANEL -->
 <div id="indexPanel">
@@ -167,17 +154,14 @@ html, body {
 const indexBtn = document.getElementById('indexBtn');
 const indexPanel = document.getElementById('indexPanel');
 const closeIndex = document.getElementById('closeIndex');
-const homeScreen = document.getElementById('homeScreen');
 
+// otevření / zavření indexu
 indexBtn.addEventListener('click', () => {
-  const isOpen = indexPanel.style.top === '30%';
-  indexPanel.style.top = isOpen ? '100%' : '30%';
-  homeScreen.classList.toggle('blurred', !isOpen);
+  indexPanel.style.top = indexPanel.style.top === '100%' ? '30%' : '100%';
 });
 
 closeIndex.addEventListener('click', () => {
   indexPanel.style.top = '100%';
-  homeScreen.classList.remove('blurred');
 });
 </script>
 
