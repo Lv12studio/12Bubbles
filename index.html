@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Minihra</title>
 <style>
-body {
+html, body {
   margin: 0;
   padding: 0;
+  height: 100vh;
   overflow: hidden;
   font-family: monospace;
   background-color: #0a0a0a;
@@ -33,8 +34,8 @@ body {
   text-transform: uppercase;
   cursor: pointer;
   box-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 60px #0ff;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   z-index: 1000;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 #startBtn:hover {
   transform: translate(-50%, -50%) scale(1.1);
@@ -50,7 +51,7 @@ body {
   font-size: 80px;
   color: #0ff;
   text-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
-  z-index: 1000;
+  z-index: 1001;
   display: none;
 }
 
@@ -60,7 +61,7 @@ body {
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 1001;
   text-align: center;
   display: none;
 }
@@ -137,6 +138,7 @@ let lives = 3;
 let bubbleInterval;
 
 startBtn.addEventListener('click', startCountdown);
+startBtn.addEventListener('touchstart', startCountdown);
 
 function startCountdown() {
   startBtn.style.display = 'none';
@@ -182,7 +184,7 @@ function startGame() {
 
     const pop = () => {
       score++;
-      if(score > 999999) score = 999999; // max score
+      if(score > 999999) score = 999999;
       scoreEl.textContent = "Skóre: " + score;
 
       if(score > highscore){
