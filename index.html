@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 BUBBLES</title>
+<title>Minihra</title>
 <style>
 html, body {
   margin: 0;
@@ -16,30 +16,9 @@ html, body {
                     radial-gradient(circle at 70% 70%, #ff00ff1a 10%, transparent 60%),
                     linear-gradient(180deg, #000 0%, #111 100%);
   color: #0ff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
-/* --- TITLE --- */
-#title {
-  font-size: 64px;
-  text-transform: uppercase;
-  font-weight: bold;
-  color: #0ff;
-  text-shadow: 0 0 15px #0ff, 0 0 30px #0ff, 0 0 50px #0ff;
-  letter-spacing: 3px;
-  margin-bottom: 40px;
-  animation: glowPulse 3s ease-in-out infinite;
-}
-
-@keyframes glowPulse {
-  0%, 100% { text-shadow: 0 0 15px #0ff, 0 0 30px #0ff, 0 0 50px #0ff; }
-  50% { text-shadow: 0 0 25px #00ffff, 0 0 45px #00ffcc, 0 0 70px #0ff; }
-}
-
-/* --- BUTTONS --- */
+/* --- HOME SCREEN BUTTONS --- */
 #startBtn, #indexBtn {
   display: block;
   margin: 15px auto;
@@ -57,6 +36,55 @@ html, body {
   transition: transform 0.2s;
 }
 #startBtn:hover, #indexBtn:hover { transform: scale(1.05); }
+
+/* --- COUNTDOWN --- */
+#countdown {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  color: #0ff;
+  text-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
+  z-index: 1001;
+  display: none;
+}
+
+/* --- SCORE CONTAINER --- */
+#scoreContainer {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  text-align: center;
+  display: none;
+}
+#highscore { font-size: 20px; color: #ff0; margin-bottom: 5px; }
+#score { font-size: 28px; color: #0ff; }
+#lives { font-size: 20px; color: #f00; margin-top: 5px; }
+
+/* --- BUBBLES --- */
+.bubble {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #00ffff, #ff00ff);
+  border: 2px solid #0ff;
+  box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset;
+  position: absolute;
+  cursor: pointer;
+}
+
+.bubble.rare2x { background: linear-gradient(135deg, #ffff00, #ff9900); color: #000; font-size: 28px; box-shadow: 0 0 20px #ff0, 0 0 40px #ff0 inset; }
+.bubble.rare144 { background: linear-gradient(135deg, #00ff00, #00aa00); color: #000; font-size: 28px; box-shadow: 0 0 20px #0f0, 0 0 40px #0f0 inset; }
+.bubble.triple { background: linear-gradient(135deg, #ff00ff, #9900ff); color: #fff; font-size: 24px; box-shadow: 0 0 20px #f0f, 0 0 40px #f0f inset; }
 
 /* --- INDEX PANEL --- */
 #indexPanel {
@@ -95,7 +123,6 @@ html, body {
 }
 #closeIndex:hover { transform: scale(1.3); color: #ff00ff; }
 
-/* --- INDEX ITEMS --- */
 .indexItem {
   display: flex;
   align-items: center;
@@ -123,8 +150,7 @@ html, body {
 </head>
 <body>
 
-<!-- HOME SCREEN -->
-<h1 id="title">12 BUBBLES</h1>
+<!-- HOME BUTTONS -->
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
 
