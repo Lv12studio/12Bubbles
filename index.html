@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minihra</title>
+<title>Futuristické Bubliny</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
 
@@ -57,26 +57,28 @@ body {
   display: none;
 }
 
-/* Skóre a nejlepší skóre (během návštěvy) */
-#score {
+/* Skóre a nejvyšší skóre */
+#scoreContainer {
   position: fixed;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 28px;
-  color: #0ff;
-  text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
   z-index: 1000;
+  text-align: center;
   display: none;
 }
 #highscore {
-  position: fixed;
-  top: 20px;
-  right: 20px;
   font-size: 20px;
   color: #ff0;
   text-shadow: 0 0 10px #ff0, 0 0 20px #ff0;
-  z-index: 1000;
+  margin-bottom: 5px;
+  font-family: 'Orbitron', sans-serif;
+}
+#score {
+  font-size: 28px;
+  color: #0ff;
+  text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+  font-family: 'Orbitron', sans-serif;
 }
 
 /* Bubliny */
@@ -111,12 +113,15 @@ body {
 
 <button id="startBtn">START</button>
 <div id="countdown"></div>
-<div id="score">Skóre: 0</div>
-<div id="highscore">Nejvyšší skóre: 0</div>
+<div id="scoreContainer">
+  <div id="highscore">Nejvyšší skóre: 0</div>
+  <div id="score">Skóre: 0</div>
+</div>
 
 <script>
 const startBtn = document.getElementById('startBtn');
 const countdownEl = document.getElementById('countdown');
+const scoreContainer = document.getElementById('scoreContainer');
 const scoreEl = document.getElementById('score');
 const highscoreEl = document.getElementById('highscore');
 
@@ -139,6 +144,7 @@ function startCountdown() {
     } else {
       clearInterval(interval);
       countdownEl.style.display = 'none';
+      scoreContainer.style.display = 'block';
       startGame();
     }
   }, 1000);
@@ -147,7 +153,6 @@ function startCountdown() {
 function startGame() {
   score = 0;
   scoreEl.textContent = "Skóre: " + score;
-  scoreEl.style.display = 'block';
 
   const images = [
     'https://picsum.photos/80/80?random=1',
@@ -170,7 +175,6 @@ function startGame() {
     bubble.style.height = `${size}px`;
     bubble.style.left = Math.random() * (window.innerWidth - size) + 'px';
 
-    // náhodně občas rychlejší bubliny
     const duration = Math.random() < 0.2 ? Math.random() * 3 + 2 : Math.random() * 5 + 5;
     bubble.style.animationDuration = `${duration}s`;
 
@@ -181,7 +185,6 @@ function startGame() {
       if(score > 999999) score = 999999;
       scoreEl.textContent = "Skóre: " + score;
 
-      // Nejvyšší skóre během této návštěvy
       if(score > highscore){
         highscore = score;
         highscoreEl.textContent = "Nejvyšší skóre: " + highscore;
@@ -196,7 +199,7 @@ function startGame() {
   }
 
   const bubbleInterval = setInterval(createBubble, 500);
-  setTimeout(() => clearInterval(bubbleInterval), 30000); // hra 30s
+  setTimeout(() => clearInterval(bubbleInterval), 30000);
 }
 </script>
 
