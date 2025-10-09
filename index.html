@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bubliny z obrázků s hrou</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #111;
+    position: relative;
+    font-family: sans-serif;
+  }
+
+  /* Bubliny */
+  .bubble {
+    width: 80px;
+    height: 80px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    animation: floatUp linear infinite;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) scale(1); opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
+  }
+
+  /* Tlačítko START */
+  #startBtn {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    padding: 10px 20px;
+    background-color: #ff5733;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    z-index: 1000;
+  }
+
+  /* Odpočet */
+  #countdown {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    color: white;
+    z-index: 1000;
+    display: none;
+  }
+
+  /* Skóre */
+  #score {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    color: white;
+    z-index: 1000;
+    display: none;
+  }
+
+</style>
+</head>
+<body>
+
+<button id="startBtn">START</button>
+<div id="countdown"></div>
+<div id="score">Skóre: 0</div>
+
+<script>
+const startBtn = document.getElementById('startBtn');
+const countdownEl = document.getElementById('countdown');
+const scoreEl = document.getElementById('score');
+let score = 0;
+
+startBtn.addEventListener('click', () => {
+  startBtn.style.display = 'none';
+  countdownEl.style.display = 'block';
+  
+  let count = 3;
+  countdownEl.textContent = count;
+  
+  const interval = setInterval(() => {
+    count--;
+    if (count > 0) {
+      countdownEl.textContent = count;
+    } else {
+      clearInterval(interval);
+      countdownEl.style.display = 'none';
+      startGame();
+    }
+  }, 1000);
+});
+
+function startGame() {
+  score = 0;
+  scoreEl.textContent = "Skóre: " + score;
+  scoreEl.style.display = 'block';
+
+  const images = [
+    'obrazek1.jpg',
+    'obrazek2.jpg',
+    'obrazek3.jpg',
+    'obrazek4.jpg',
+    'obrazek5.jpg',
+    'obrazek6.jpg'
+  ];
+
+  function createBubble() {
+    const bubble = document.createElement('div');
+    bubble.classList.add('bubble');
+    
+    // Náhodný obrázek
+    const img = images[Math.floor(Math.random() * images.length)];
+    bubble.style.backgroundImage = `url(${img})`;
+
+    // Náhodná pozice a rychlost
+    const size = Math.random() * 60 + 40; // 40-100px
+    bubble.style.width = `${size}px`;
+    bubble.style.height = `${size}px`;
+    bubble.style.left = Math.random() * (window.innerWidth - size) + 'px';
+    const duration = Math.random() * 5 + 5; // 5-10 sekund
+    bubble.style.animationDuration = `${duration}s`;
+
+    document.body.appendChild(bubble);
+
+    // Kliknutí = pop
+    bubble.addEventListener('click', () => {
+      score++;
+      scoreEl.textContent = "Skóre: " + score;
+      bubble.remove();
+    });
+
+    // Odstranit po animaci
+    setTimeout(() => bubble.remove(), duration * 1000);
+  }
+
+  // Generování bublin každých 0.5 sekundy
+  const bubbleInterval = setInterval(createBubble, 500);
+
+  // Stop po 30 sekundách
+  setTimeout(() => clearInterval(bubbleInterval), 30000);
+}
+</script>
+
+</body>
+</html>
