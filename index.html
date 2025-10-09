@@ -99,15 +99,12 @@ const messages = [
   "Nezapomeň dýchat."
 ];
 
-const totalDucks = 10; // počet kachen pro jednu sérii
+const totalDucks = 10;
 let clickedDucks = 0;
 
-startBtn.addEventListener('click', startCountdown);
-
-function startCountdown() {
+startBtn.addEventListener('click', () => {
   startBtn.style.display = 'none';
   countdownEl.style.display = 'block';
-  
   let count = 3;
   countdownEl.textContent = count;
 
@@ -121,11 +118,11 @@ function startCountdown() {
       startGame();
     }
   }, 1000);
-}
+});
 
 function startGame() {
   clickedDucks = 0;
-  for(let i = 0; i < totalDucks; i++) {
+  for (let i = 0; i < totalDucks; i++) {
     createDuck();
   }
 }
@@ -134,7 +131,7 @@ function createDuck() {
   const duck = document.createElement('img');
   duck.src = duckImage;
   duck.classList.add('duck');
-  
+
   const size = Math.random() * 30 + 30;
   duck.style.width = `${size}px`;
   duck.style.height = `${size}px`;
@@ -151,11 +148,11 @@ function createDuck() {
   const moveInterval = setInterval(() => {
     x += dx;
     y += dy;
-    if(x < 0 || x > window.innerWidth - size) dx *= -1;
-    if(y < 0 || y > window.innerHeight - size) dy *= -1;
+    if (x < 0 || x > window.innerWidth - size) dx *= -1;
+    if (y < 0 || y > window.innerHeight - size) dy *= -1;
     duck.style.left = `${x}px`;
     duck.style.top = `${y}px`;
-  }, 16);
+  }, 20); // pomalejší pohyb
 
   const pop = () => {
     clearInterval(moveInterval);
@@ -167,7 +164,6 @@ function createDuck() {
 
     clickedDucks++;
     if (clickedDucks === totalDucks) {
-      // všechny kachny odkliknuté → zobraz náhodný nápis
       const msg = messages[Math.floor(Math.random() * messages.length)];
       messageEl.textContent = msg;
       messageEl.style.display = 'block';
@@ -283,15 +279,12 @@ const messages = [
   "Nezapomeň dýchat."
 ];
 
-const totalDucks = 10; // počet kachen pro jednu sérii
+const totalDucks = 10;
 let clickedDucks = 0;
 
-startBtn.addEventListener('click', startCountdown);
-
-function startCountdown() {
+startBtn.addEventListener('click', () => {
   startBtn.style.display = 'none';
   countdownEl.style.display = 'block';
-  
   let count = 3;
   countdownEl.textContent = count;
 
@@ -305,11 +298,11 @@ function startCountdown() {
       startGame();
     }
   }, 1000);
-}
+});
 
 function startGame() {
   clickedDucks = 0;
-  for(let i = 0; i < totalDucks; i++) {
+  for (let i = 0; i < totalDucks; i++) {
     createDuck();
   }
 }
@@ -318,7 +311,7 @@ function createDuck() {
   const duck = document.createElement('img');
   duck.src = duckImage;
   duck.classList.add('duck');
-  
+
   const size = Math.random() * 30 + 30;
   duck.style.width = `${size}px`;
   duck.style.height = `${size}px`;
@@ -335,11 +328,11 @@ function createDuck() {
   const moveInterval = setInterval(() => {
     x += dx;
     y += dy;
-    if(x < 0 || x > window.innerWidth - size) dx *= -1;
-    if(y < 0 || y > window.innerHeight - size) dy *= -1;
+    if (x < 0 || x > window.innerWidth - size) dx *= -1;
+    if (y < 0 || y > window.innerHeight - size) dy *= -1;
     duck.style.left = `${x}px`;
     duck.style.top = `${y}px`;
-  }, 16);
+  }, 20); // pomalejší pohyb
 
   const pop = () => {
     clearInterval(moveInterval);
@@ -351,7 +344,6 @@ function createDuck() {
 
     clickedDucks++;
     if (clickedDucks === totalDucks) {
-      // všechny kachny odkliknuté → zobraz náhodný nápis
       const msg = messages[Math.floor(Math.random() * messages.length)];
       messageEl.textContent = msg;
       messageEl.style.display = 'block';
