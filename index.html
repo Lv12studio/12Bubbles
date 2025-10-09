@@ -14,7 +14,6 @@ body {
   position: relative;
 }
 
-/* Styl tlačítka START */
 #startBtn {
   position: fixed;
   top: 40%;
@@ -86,7 +85,7 @@ const countdownEl = document.getElementById('countdown');
 const messageEl = document.getElementById('message');
 const popSound = document.getElementById('popSound');
 
-const duckImage = 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Duck_icon.svg'; 
+const duckImage = 'https://cdn.pixabay.com/animation/2024/11/06/02/49/02-49-03-870_512.gif';
 const messages = [
   "Jdi se napít vody.",
   "Jdi spinkat.",
@@ -100,8 +99,8 @@ const messages = [
   "Nezapomeň dýchat."
 ];
 
-let duckWaveCount = 5; // počáteční počet kachniček
-let gameInterval;
+const totalDucks = 10; // počet kachen pro jednu sérii
+let clickedDucks = 0;
 
 startBtn.addEventListener('click', startCountdown);
 
@@ -125,16 +124,8 @@ function startCountdown() {
 }
 
 function startGame() {
-  spawnWave();
-  // každé 3 sekundy se přidá nová vlna kachniček (postupně více)
-  gameInterval = setInterval(() => {
-    duckWaveCount = Math.min(duckWaveCount + 2, 35); // max 35 kachniček
-    spawnWave();
-  }, 3000);
-}
-
-function spawnWave() {
-  for(let i = 0; i < duckWaveCount; i++) {
+  clickedDucks = 0;
+  for(let i = 0; i < totalDucks; i++) {
     createDuck();
   }
 }
@@ -144,7 +135,7 @@ function createDuck() {
   duck.src = duckImage;
   duck.classList.add('duck');
   
-  const size = Math.random() * 30 + 30; // 30-60px
+  const size = Math.random() * 30 + 30;
   duck.style.width = `${size}px`;
   duck.style.height = `${size}px`;
   document.body.appendChild(duck);
@@ -154,9 +145,8 @@ function createDuck() {
   duck.style.left = `${x}px`;
   duck.style.top = `${y}px`;
 
-  // náhodná rychlost
-  let dx = (Math.random() < 0.5 ? -1 : 1) * (Math.random() * 3 + 1);
-  let dy = (Math.random() < 0.5 ? -1 : 1) * (Math.random() * 3 + 1);
+  let dx = (Math.random() < 0.5 ? -1 : 1) * (Math.random() * 1 + 0.5);
+  let dy = (Math.random() < 0.5 ? -1 : 1) * (Math.random() * 1 + 0.5);
 
   const moveInterval = setInterval(() => {
     x += dx;
@@ -175,10 +165,198 @@ function createDuck() {
     popSound.play();
     setTimeout(() => duck.remove(), 200);
 
-    const msg = messages[Math.floor(Math.random() * messages.length)];
-    messageEl.textContent = msg;
-    messageEl.style.display = 'block';
-    setTimeout(() => messageEl.style.display = 'none', 3000);
+    clickedDucks++;
+    if (clickedDucks === totalDucks) {
+      // všechny kachny odkliknuté → zobraz náhodný nápis
+      const msg = messages[Math.floor(Math.random() * messages.length)];
+      messageEl.textContent = msg;
+      messageEl.style.display = 'block';
+      setTimeout(() => messageEl.style.display = 'none', 3000);
+    }
+  };
+
+  duck.addEventListener('click', pop);
+  duck.addEventListener('touchstart', pop);
+}
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KACHNIČKY</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+  position: relative;
+}
+
+#startBtn {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  padding: 20px 40px;
+  background: radial-gradient(circle, #ffafbd, #ffc3a0);
+  border: none;
+  border-radius: 15px;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+#startBtn:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.4);
+}
+
+#countdown {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  color: white;
+  z-index: 1000;
+  display: none;
+}
+
+#message {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  color: yellow;
+  z-index: 1000;
+  text-align: center;
+  display: none;
+}
+
+.duck {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  user-select: none;
+}
+</style>
+</head>
+<body>
+
+<button id="startBtn">START</button>
+<div id="countdown"></div>
+<div id="message"></div>
+
+<audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
+
+<script>
+const startBtn = document.getElementById('startBtn');
+const countdownEl = document.getElementById('countdown');
+const messageEl = document.getElementById('message');
+const popSound = document.getElementById('popSound');
+
+const duckImage = 'https://cdn.pixabay.com/animation/2024/11/06/02/49/02-49-03-870_512.gif';
+const messages = [
+  "Jdi se napít vody.",
+  "Jdi spinkat.",
+  "Jdi papat.",
+  "Vyhrál jsi: NIC",
+  "Jak jsi věděl co dělat?",
+  "Měl by jsi jít na můj Discord server. Tady je odkaz: https://discord.gg/Cvf2cRtGex",
+  "Prosím odebírej můj YouTube kanál 🥺",
+  "...",
+  "Měl by ses dívat na Anime.",
+  "Nezapomeň dýchat."
+];
+
+const totalDucks = 10; // počet kachen pro jednu sérii
+let clickedDucks = 0;
+
+startBtn.addEventListener('click', startCountdown);
+
+function startCountdown() {
+  startBtn.style.display = 'none';
+  countdownEl.style.display = 'block';
+  
+  let count = 3;
+  countdownEl.textContent = count;
+
+  const interval = setInterval(() => {
+    count--;
+    if (count > 0) {
+      countdownEl.textContent = count;
+    } else {
+      clearInterval(interval);
+      countdownEl.style.display = 'none';
+      startGame();
+    }
+  }, 1000);
+}
+
+function startGame() {
+  clickedDucks = 0;
+  for(let i = 0; i < totalDucks; i++) {
+    createDuck();
+  }
+}
+
+function createDuck() {
+  const duck = document.createElement('img');
+  duck.src = duckImage;
+  duck.classList.add('duck');
+  
+  const size = Math.random() * 30 + 30;
+  duck.style.width = `${size}px`;
+  duck.style.height = `${size}px`;
+  document.body.appendChild(duck);
+
+  let x = Math.random() * (window.innerWidth - size);
+  let y = Math.random() * (window.innerHeight - size);
+  duck.style.left = `${x}px`;
+  duck.style.top = `${y}px`;
+
+  let dx = (Math.random() < 0.5 ? -1 : 1) * (Math.random() * 1 + 0.5);
+  let dy = (Math.random() < 0.5 ? -1 : 1) * (Math.random() * 1 + 0.5);
+
+  const moveInterval = setInterval(() => {
+    x += dx;
+    y += dy;
+    if(x < 0 || x > window.innerWidth - size) dx *= -1;
+    if(y < 0 || y > window.innerHeight - size) dy *= -1;
+    duck.style.left = `${x}px`;
+    duck.style.top = `${y}px`;
+  }, 16);
+
+  const pop = () => {
+    clearInterval(moveInterval);
+    duck.style.transform = 'scale(2)';
+    duck.style.opacity = '0';
+    popSound.currentTime = 0;
+    popSound.play();
+    setTimeout(() => duck.remove(), 200);
+
+    clickedDucks++;
+    if (clickedDucks === totalDucks) {
+      // všechny kachny odkliknuté → zobraz náhodný nápis
+      const msg = messages[Math.floor(Math.random() * messages.length)];
+      messageEl.textContent = msg;
+      messageEl.style.display = 'block';
+      setTimeout(() => messageEl.style.display = 'none', 3000);
+    }
   };
 
   duck.addEventListener('click', pop);
