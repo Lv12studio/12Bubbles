@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minihra</title>
+<title>12 Bubbles</title>
 <style>
 html, body {
   margin: 0;
@@ -16,6 +16,26 @@ html, body {
                     radial-gradient(circle at 70% 70%, #ff00ff1a 10%, transparent 60%),
                     linear-gradient(180deg, #000 0%, #111 100%);
   color: #0ff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#homeScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#homeTitle {
+  font-size: 60px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+  color: #0ff;
+  text-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
 }
 
 #startBtn, #indexBtn {
@@ -34,6 +54,7 @@ html, body {
   z-index: 1000;
 }
 
+/* zbytek stylů zůstává stejný jako předtím... */
 #countdown {
   position: fixed;
   top: 50%;
@@ -59,6 +80,7 @@ html, body {
 #score { font-size: 28px; color: #0ff; }
 #lives { font-size: 20px; color: #f00; margin-top: 5px; }
 
+/* Bubliny a index Panel zůstává stejný ... */
 .bubble {
   width: 80px;
   height: 80px;
@@ -75,7 +97,6 @@ html, body {
   position: absolute;
   cursor: pointer;
 }
-
 .bubble.rare2x { background: linear-gradient(135deg, #ffff00, #ff9900); color: #000; font-size: 28px; box-shadow: 0 0 20px #ff0, 0 0 40px #ff0 inset; }
 .bubble.rare144 { background: linear-gradient(135deg, #00ff00, #00aa00); color: #000; font-size: 28px; box-shadow: 0 0 20px #0f0, 0 0 40px #0f0 inset; }
 .bubble.triple { background: linear-gradient(135deg, #ff00ff, #9900ff); color: #fff; font-size: 24px; box-shadow: 0 0 20px #f0f, 0 0 40px #f0f inset; }
@@ -153,8 +174,11 @@ html, body {
 </head>
 <body>
 
-<button id="startBtn">START</button>
-<button id="indexBtn">INDEX</button>
+<div id="homeScreen">
+  <div id="homeTitle">12 BUBBLES</div>
+  <button id="startBtn">START</button>
+  <button id="indexBtn">INDEX</button>
+</div>
 
 <div id="indexPanel">
   <h2>Bubliny Index</h2>
@@ -171,7 +195,7 @@ html, body {
     <div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div>
   </div>
   <div class="indexItem">
-    <div class="bubbleImg" style="background: linear-gradient(135deg, #ff00ff, #9900ff);">3×13</div>
+    <div class="bubbleImg" style="background: linear-gradient(135deg, #ff00ff, #9900ff);">3×12</div>
     <div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div>
   </div>
 </div>
@@ -188,6 +212,7 @@ html, body {
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
+// JavaScript zůstává stejný, jen změnit spawn triple bubble na "3×12"
 const startBtn = document.getElementById('startBtn');
 const indexBtn = document.getElementById('indexBtn');
 const indexPanel = document.getElementById('indexPanel');
@@ -236,7 +261,7 @@ function spawnBubble(){
 
   if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
   else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
-  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×13"; bubble.dataset.type="triple"; }
+  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; } // změna zde
   else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
 
   const size=Math.random()*60+60;
