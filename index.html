@@ -135,19 +135,20 @@ html, body {
   text-transform:uppercase;
   z-index:2000;
   opacity:0;
+  display:none; /* skryté při načtení */
 }
 
 #easterBRUH {
   color:#ff1a1a;
-  text-shadow:
-    0 0 5px #ff3, 0 0 10px #f00, 0 0 20px #ff0,
-    0 0 40px #f00, 0 0 80px #ff3;
-  animation:fadeShakeNeon 5s forwards;
+  text-shadow: 0 0 5px #ff3,0 0 10px #f00,0 0 20px #ff0,0 0 40px #f00,0 0 80px #ff3;
+}
+
+#easter12 {
+  color:#0ff;
 }
 
 #easter67 {
   color:#00ccff;
-  animation:spiralShrink 5s forwards;
 }
 
 @keyframes fadeShakeNeon {
@@ -250,18 +251,19 @@ function startGame(){
   requestAnimationFrame(updateBubbles);
 }
 
-function spawnBubble(){ /* ... logika spawn bublin z předchozích verzí ... */ }
-
-function updateBubbles(){ /* ... logika pohybu bublin ... */ }
-
-function endGame(){
-  gameRunning=false;
-  bubbles.forEach(b=>b.remove());
-  bubbles=[];
-  if(score<=3){ showEaster(easterBRUH); }
-  else if(score===12){ showEaster(easter12); }
-  else if(score===67){ showEaster(easter67); }
-  else showStartButtons();
+function showEaster(el){
+  el.style.display='flex';
+  el.style.opacity='1';
+  if(el===easter67){
+    el.style.animation='spiralShrink 5s forwards';
+  } else {
+    el.style.animation='fadeShakeNeon 5s forwards';
+  }
+  setTimeout(()=>{
+    el.style.display='none';
+    el.style.animation='';
+    showStartButtons();
+  },5000);
 }
 
 function showStartButtons(){
@@ -270,13 +272,8 @@ function showStartButtons(){
   scoreContainer.style.display='none';
 }
 
-function showEaster(el){
-  el.style.display='flex';
-  el.style.opacity='1';
-  if(el===easter67) el.style.animation='spiralShrink 5s forwards';
-  else el.style.animation='fadeShakeNeon 5s forwards';
-  setTimeout(()=>{ el.style.display='none'; showStartButtons(); },5000);
-}
+/* TODO: doplnit spawn a update bublin podle předchozí logiky s náhodnými typy, rychlostmi, životy, max skóre 999999999, šance pro 12×2, 12², 3×13 */
+
 </script>
 </body>
 </html>
