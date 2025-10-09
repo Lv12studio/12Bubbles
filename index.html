@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Futuristické Bubliny</title>
+<title>Minihra</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
 
@@ -12,7 +12,7 @@ body {
   padding: 0;
   overflow: hidden;
   font-family: 'Orbitron', sans-serif;
-  background-color: #0a0a0a; /* opravdu tmavé pozadí */
+  background-color: #0a0a0a;
   background-image: radial-gradient(circle at 30% 30%, #0ff1 10%, transparent 60%),
                     radial-gradient(circle at 70% 70%, #ff00ff1a 10%, transparent 60%),
                     linear-gradient(180deg, #000 0%, #111 100%);
@@ -20,12 +20,12 @@ body {
   color: #0ff;
 }
 
-/* Styl tlačítka START */
+/* START tlačítko uprostřed stránky */
 #startBtn {
   position: fixed;
-  top: 20px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   font-size: 28px;
   padding: 15px 35px;
   background: linear-gradient(45deg, #00ffff, #00ff99, #ff00ff);
@@ -33,14 +33,14 @@ body {
   border-radius: 12px;
   color: white;
   font-weight: bold;
-  text-transform: uppercase;
+  text-transform: uppercase; /* ALL CAPS */
   cursor: pointer;
   box-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 60px #0ff;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   z-index: 1000;
 }
 #startBtn:hover {
-  transform: translateX(-50%) scale(1.1);
+  transform: translate(-50%, -50%) scale(1.1);
   box-shadow: 0 0 30px #0ff, 0 0 60px #0ff, 0 0 90px #0ff;
 }
 
@@ -57,10 +57,10 @@ body {
   display: none;
 }
 
-/* Skóre */
+/* Skóre a nejlepší skóre (během návštěvy) */
 #score {
   position: fixed;
-  top: 80px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 28px;
@@ -68,6 +68,15 @@ body {
   text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
   z-index: 1000;
   display: none;
+}
+#highscore {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 20px;
+  color: #ff0;
+  text-shadow: 0 0 10px #ff0, 0 0 20px #ff0;
+  z-index: 1000;
 }
 
 /* Bubliny */
@@ -86,7 +95,6 @@ body {
   border: 2px solid #0ff;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-
 .bubble:hover {
   transform: scale(1.2) rotate(10deg);
   box-shadow: 0 0 25px #0ff, 0 0 50px #0ff inset;
@@ -104,12 +112,16 @@ body {
 <button id="startBtn">START</button>
 <div id="countdown"></div>
 <div id="score">Skóre: 0</div>
+<div id="highscore">Nejvyšší skóre: 0</div>
 
 <script>
 const startBtn = document.getElementById('startBtn');
 const countdownEl = document.getElementById('countdown');
 const scoreEl = document.getElementById('score');
+const highscoreEl = document.getElementById('highscore');
+
 let score = 0;
+let highscore = 0; // během návštěvy
 
 startBtn.addEventListener('click', startCountdown);
 
@@ -157,14 +169,24 @@ function startGame() {
     bubble.style.width = `${size}px`;
     bubble.style.height = `${size}px`;
     bubble.style.left = Math.random() * (window.innerWidth - size) + 'px';
-    const duration = Math.random() * 5 + 5;
+
+    // náhodně občas rychlejší bubliny
+    const duration = Math.random() < 0.2 ? Math.random() * 3 + 2 : Math.random() * 5 + 5;
     bubble.style.animationDuration = `${duration}s`;
 
     document.body.appendChild(bubble);
 
     const pop = () => {
       score++;
+      if(score > 999999) score = 999999;
       scoreEl.textContent = "Skóre: " + score;
+
+      // Nejvyšší skóre během této návštěvy
+      if(score > highscore){
+        highscore = score;
+        highscoreEl.textContent = "Nejvyšší skóre: " + highscore;
+      }
+
       bubble.remove();
     };
     bubble.addEventListener('click', pop);
