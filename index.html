@@ -77,6 +77,13 @@ html, body {
   position: absolute;
   cursor: pointer;
 }
+
+.bubble.rare {
+  background: linear-gradient(135deg, #ffff00, #ff9900);
+  color: #000;
+  font-size: 28px;
+  box-shadow: 0 0 20px #ff0, 0 0 40px #ff0 inset;
+}
 </style>
 </head>
 <body>
@@ -135,55 +142,66 @@ function startGame() {
   bubbles = [];
   gameRunning = true;
   startTime = Date.now();
-  spawnBubbles();
+  spawnBubble();
   requestAnimationFrame(updateBubbles);
 }
 
-function spawnBubbles() {
+function spawnBubble() {
   if(!gameRunning) return;
-  
-  const elapsed = (Date.now() - startTime)/1000; // čas v sekundách
-  const speedMultiplier = 1 + elapsed/30; // rychlost roste s časem
-  const numBubbles = Math.min(3, 1 + Math.floor(elapsed/10)); // začíná 1, postupně až 3
 
-  for(let i=0;i<numBubbles;i++){
-    const bubble = document.createElement('div');
-    bubble.classList.add('bubble');
+  const elapsed = (Date.now() - startTime)/1000;
+  const speedMultiplier = 1 + elapsed/120; // pozvolné zrychlování
+
+  const bubble = document.createElement('div');
+  bubble.classList.add('bubble');
+
+  // 2-4% šance na vzácnou bublinu
+  const rareChance = Math.random();
+  const isRare = rareChance <= 0.04;
+  if(isRare){
+    bubble.classList.add('rare');
+    bubble.textContent = "12×2";
+  } else {
     bubble.textContent = "12";
-    
-    const size = Math.random()*60+60;
-    bubble.style.width = `${size}px`;
-    bubble.style.height = `${size}px`;
-    bubble.style.fontSize = `${size/3}px`;
-    bubble.style.left = Math.random()*(window.innerWidth-size) + 'px';
-    bubble.style.top = (window.innerHeight - size) + 'px';
-    
-    const speed = (Math.random()*1.5 + 1) * speedMultiplier; // rychlost zvyšuje se časem
-    bubble.dataset.speed = speed;
-    
-    document.body.appendChild(bubble);
-    
-    const pop = () => {
-      if(!gameRunning) return;
+  }
+
+  const size = Math.random()*60+60;
+  bubble.style.width = `${size}px`;
+  bubble.style.height = `${size}px`;
+  bubble.style.fontSize = isRare ? `${size/2.5}px` : `${size/3}px`;
+  bubble.style.left = Math.random()*(window.innerWidth-size) + 'px';
+  bubble.style.top = (window.innerHeight - size) + 'px';
+  
+  const speed = (Math.random()*1.5 + 1) * speedMultiplier;
+  bubble.dataset.speed = speed;
+  bubble.dataset.rare = isRare ? "true" : "false";
+  
+  document.body.appendChild(bubble);
+  
+  const pop = () => {
+    if(!gameRunning) return;
+    if(isRare){
+      score *= 2;
+      if(score > 999999) score = 999999;
+    } else {
       score++;
       if(score > 999999) score = 999999;
-      scoreEl.textContent = "Skóre: " + score;
-      if(score > highscore){
-        highscore = score;
-        highscoreEl.textContent = "Nejvyšší skóre: " + highscore;
-      }
-      bubble.remove();
-      bubbles = bubbles.filter(b => b !== bubble);
-    };
-    
-    bubble.addEventListener('click', pop);
-    bubble.addEventListener('touchstart', pop);
-    
-    bubbles.push(bubble);
-  }
+    }
+    scoreEl.textContent = "Skóre: " + score;
+    if(score > highscore){
+      highscore = score;
+      highscoreEl.textContent = "Nejvyšší skóre: " + highscore;
+    }
+    bubble.remove();
+    bubbles = bubbles.filter(b => b !== bubble);
+  };
   
-  // další spawn po 500ms
-  setTimeout(spawnBubbles, 500);
+  bubble.addEventListener('click', pop);
+  bubble.addEventListener('touchstart', pop);
+  
+  bubbles.push(bubble);
+
+  setTimeout(spawnBubble, 500);
 }
 
 function updateBubbles() {
@@ -194,7 +212,6 @@ function updateBubbles() {
     bubble.style.top = top - parseFloat(bubble.dataset.speed) + 'px';
     
     if(top <= 0){
-      // dosáhla stropu
       lives--;
       livesEl.textContent = "Životy: " + lives;
       bubble.remove();
