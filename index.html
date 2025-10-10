@@ -5,294 +5,178 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>12 BUBBLES - HALLOWEEN 🎃</title>
 <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background: radial-gradient(circle at center, #0b0b0b 0%, #1a0000 80%);
-    font-family: "Poppins", sans-serif;
-    color: white;
-    height: 100%;
-  }
-  h1 {
-    text-align: center;
-    margin-top: 15vh;
-    font-size: 3rem;
-    color: orange;
-    text-shadow: 0 0 20px #ff6600;
-    letter-spacing: 4px;
-  }
-  #homeScreen, #gameScreen, #endScreen, #indexScreen {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: opacity 0.4s ease;
-  }
-  #gameScreen, #endScreen, #indexScreen {
-    display: none;
-  }
-  button {
-    font-size: 1.5rem;
-    padding: 14px 40px;
-    margin: 10px;
-    border-radius: 15px;
-    border: none;
-    cursor: pointer;
-    background: linear-gradient(45deg, #ff6600, #ff3300);
-    color: black;
-    font-weight: bold;
-    transition: transform 0.2s, background 0.2s;
-  }
-  button:hover {
-    transform: scale(1.1);
-    background: linear-gradient(45deg, #ffaa00, #ff6600);
-  }
-  #score, #highScore {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 1.2rem;
-  }
-  #highScore {
-    top: 50px;
-    color: #ff9933;
-  }
-  .bubble {
-    position: absolute;
-    border-radius: 50%;
-    text-align: center;
-    font-weight: bold;
-    color: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-  }
-  .bubble.normal {
-    background: radial-gradient(circle, #ffcc00 0%, #ffaa00 80%);
-  }
-  .bubble.pumpkin {
-    background: radial-gradient(circle, #ff6600 0%, #992600 80%);
-    color: #330000;
-  }
-  .bubble.double {
-    background: radial-gradient(circle, #00ffcc 0%, #009999 80%);
-  }
-  .bubble.square {
-    background: radial-gradient(circle, #ff00ff 0%, #9900cc 80%);
-  }
-  .bubble.triple {
-    background: radial-gradient(circle, #ffccff 0%, #cc66ff 80%);
-  }
-  .bubble.gravity {
-    background: radial-gradient(circle, #3333ff 0%, #000066 80%);
-    color: #fff;
-  }
-  #indexScreen {
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(8px);
-    flex-direction: column;
-    text-align: center;
-  }
-  #closeIndex {
-    position: absolute;
-    top: 15px; right: 15px;
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: orange;
-    text-shadow: 0 0 10px #ff6600;
-  }
-  #indexContent {
-    max-width: 90%;
-    background: rgba(20,0,0,0.7);
-    border-radius: 20px;
-    padding: 20px;
-  }
-  .indexItem {
-    margin: 15px 0;
-  }
-  #bruh, #twelve, #sixtySeven, #skull {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    font-size: 6rem;
-    opacity: 0;
-    animation: fade 5s ease forwards;
-    text-shadow: 0 0 30px;
-  }
-  #bruh { color: #ff3300; text-shadow: 0 0 40px #ff1100; font-family: 'Orbitron', sans-serif; }
-  #twelve { color: #ffee00; text-shadow: 0 0 20px #ffff33; }
-  #sixtySeven { color: #66ccff; text-shadow: 0 0 25px #0099ff; }
-  #skull { color: white; text-shadow: 0 0 50px red; }
-  @keyframes fade {
-    0% { opacity: 0; transform: translate(-50%,-50%) scale(0.8); }
-    20% { opacity: 1; transform: translate(-50%,-50%) scale(1.1) rotate(1deg); }
-    80% { opacity: 1; transform: translate(-50%,-50%) scale(1) rotate(-1deg); }
-    100% { opacity: 0; transform: translate(-50%,-50%) scale(0.8); }
-  }
+html, body {
+  margin:0; padding:0; height:100%; overflow:hidden;
+  font-family: monospace; background: radial-gradient(circle at center, #0b0b0b 0%, #1a0000 80%);
+  color:white;
+}
+h1 { text-align:center; margin-top:15vh; font-size:3rem; color:orange; text-shadow:0 0 20px #ff6600; letter-spacing:4px; }
+.screen { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; transition:opacity 0.4s ease; }
+#gameScreen, #endScreen, #indexScreen { display:none; }
+button { font-size:1.5rem; padding:14px 40px; margin:10px; border-radius:15px; border:none; cursor:pointer; background:linear-gradient(45deg, #ff6600,#ff3300); color:black; font-weight:bold; transition:transform 0.2s, background 0.2s; }
+button:hover { transform:scale(1.1); background:linear-gradient(45deg, #ffaa00,#ff6600); }
+#score, #highScore { position:absolute; top:20px; right:20px; font-size:1.2rem; }
+#highScore { top:50px; color:#ff9933; }
+.bubble { position:absolute; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; font-weight:bold; text-align:center; user-select:none; }
+.bubble.normal { background: radial-gradient(circle,#ffcc00 0%,#ffaa00 80%); color:black; }
+.bubble.pumpkin { background: radial-gradient(circle,#ff6600 0%,#992600 80%); color:#330000; }
+.bubble.double { background: radial-gradient(circle,#00ffcc 0%,#009999 80%); color:black; }
+.bubble.square { background: radial-gradient(circle,#ff00ff 0%,#9900cc 80%); color:white; }
+.bubble.triple { background: radial-gradient(circle,#ffccff 0%,#cc66ff 80%); color:black; }
+.bubble.gravity { background: radial-gradient(circle,#3333ff 0%,#000066 80%); color:white; }
+#indexScreen { background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); flex-direction: column; text-align:center; display:none; }
+#indexContent { max-width:90%; background: rgba(20,0,0,0.7); border-radius:20px; padding:20px; }
+#indexContent h2 { margin-bottom:20px; }
+.indexItem { margin:10px 0; text-align:left; color:orange; font-weight:bold; }
+#closeIndex { position:absolute; top:15px; right:15px; font-size:1.8rem; cursor:pointer; color:orange; text-shadow:0 0 10px #ff6600; }
+#bruh, #twelve, #sixtySeven, #skull { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:6rem; opacity:0; animation:fade 5s ease forwards; text-shadow:0 0 30px; }
+#bruh { color:#ff3300; text-shadow:0 0 40px #ff1100; font-family: 'Orbitron', sans-serif; }
+#twelve { color:#ffee00; text-shadow:0 0 20px #ffff33; }
+#sixtySeven { color:#66ccff; text-shadow:0 0 25px #0099ff; }
+#skull { color:white; text-shadow:0 0 50px red; }
+@keyframes fade { 0% {opacity:0; transform:translate(-50%,-50%) scale(0.8);} 20% {opacity:1; transform:translate(-50%,-50%) scale(1.1) rotate(1deg);} 80% {opacity:1; transform:translate(-50%,-50%) scale(1) rotate(-1deg);} 100% {opacity:0; transform:translate(-50%,-50%) scale(0.8);} }
 </style>
 </head>
 <body>
-  <div id="homeScreen">
-    <h1>12 BUBBLES 🎃</h1>
-    <button id="startBtn">START</button>
-    <button id="indexBtn">INDEX</button>
-    <div style="position:absolute; bottom:10px; font-size:0.8rem; opacity:0.6;">Halloween - Released 1.0.3</div>
-  </div>
+<div id="homeScreen" class="screen">
+  <h1>12 BUBBLES 🎃</h1>
+  <button id="startBtn">START</button>
+  <button id="indexBtn">INDEX</button>
+  <div style="position:absolute; bottom:10px; font-size:0.8rem; opacity:0.6;">Halloween - Released 1.0.3</div>
+</div>
 
-  <div id="gameScreen">
-    <div id="score">Skóre: 0</div>
-    <div id="highScore">Nejvyšší skóre dne: 0</div>
-  </div>
+<div id="gameScreen" class="screen">
+  <div id="score">Skóre: 0</div>
+  <div id="highScore">Nejvyšší skóre dne: 0</div>
+</div>
 
-  <div id="endScreen">
-    <h1>Konec hry!</h1>
-    <p id="finalScore">Tvé skóre: 0</p>
-    <button id="continueBtn">POKRAČOVAT</button>
-  </div>
+<div id="endScreen" class="screen">
+  <h1>Konec hry!</h1>
+  <p id="finalScore">Tvé skóre: 0</p>
+  <button id="continueBtn">POKRAČOVAT</button>
+</div>
 
-  <div id="indexScreen">
-    <span id="closeIndex">✕</span>
-    <div id="indexContent">
-      <h2>BUBBLES INDEX</h2>
-      <div class="indexItem"><b>12:</b> Základní bublina.</div>
-      <div class="indexItem"><b>🎃12🎃:</b> Halloween verze, chová se jako 12.</div>
-      <div class="indexItem"><b>12×2:</b> Zdvojnásobí tvé skóre.</div>
-      <div class="indexItem"><b>12²:</b> Přidá 144 bodů.</div>
-      <div class="indexItem"><b>3×12:</b> Spawne 3 nové bubliny.</div>
-      <div class="indexItem"><b>&lt;12&gt;:</b> Gravitační bublina – přitáhne ostatní.</div>
-    </div>
+<div id="indexScreen" class="screen">
+  <span id="closeIndex">✕</span>
+  <div id="indexContent">
+    <h2>BUBBLES INDEX</h2>
+    <div class="indexItem">12: základní bublina.</div>
+    <div class="indexItem">🎃12🎃: Halloween skin, chová se jako 12.</div>
+    <div class="indexItem">12×2: zdvojnásobí skóre.</div>
+    <div class="indexItem">12²: +144 bodů.</div>
+    <div class="indexItem">3×12: spawn 3 bubliny.</div>
+    <div class="indexItem">&lt;12&gt;: gravitační bublina, přitahuje ostatní.</div>
   </div>
+</div>
 
-  <div id="bruh">BRUH</div>
-  <div id="twelve">12</div>
-  <div id="sixtySeven">67</div>
-  <div id="skull">💀</div>
+<div id="bruh">BRUH</div>
+<div id="twelve">12</div>
+<div id="sixtySeven">67</div>
+<div id="skull">💀</div>
 
 <script>
 const home=document.getElementById('homeScreen');
 const game=document.getElementById('gameScreen');
 const end=document.getElementById('endScreen');
 const indexScreen=document.getElementById('indexScreen');
-const start=document.getElementById('startBtn');
+const startBtn=document.getElementById('startBtn');
 const indexBtn=document.getElementById('indexBtn');
 const closeIndex=document.getElementById('closeIndex');
+const continueBtn=document.getElementById('continueBtn');
 const scoreTxt=document.getElementById('score');
 const highTxt=document.getElementById('highScore');
 const finalTxt=document.getElementById('finalScore');
-const cont=document.getElementById('continueBtn');
 const bruh=document.getElementById('bruh');
 const twelve=document.getElementById('twelve');
 const sixtySeven=document.getElementById('sixtySeven');
 const skull=document.getElementById('skull');
 
-let score=0,high=0,lives=3,interval;
+let score=0, high=0, lives=3, bubbles=[], spawnInterval;
+
+startBtn.onclick=startGame;
+indexBtn.onclick=()=>{ indexScreen.style.display='flex'; home.style.display='none'; };
+closeIndex.onclick=()=>{ indexScreen.style.display='none'; home.style.display='flex'; };
+window.onclick=(e)=>{ if(e.target===indexScreen){ indexScreen.style.display='none'; home.style.display='flex'; } };
+continueBtn.onclick=()=>{ end.style.display='none'; home.style.display='flex'; };
 
 function startGame(){
   home.style.display='none';
   end.style.display='none';
   game.style.display='block';
-  score=0;lives=3;
+  score=0; lives=3;
   scoreTxt.textContent="Skóre: 0";
-  interval=setInterval(spawnBubble,1200);
+  bubbles=[];
+  spawnInterval=setInterval(spawnBubble,1000);
 }
 
 function spawnBubble(){
-  const type=Math.random();
-  let bubble=document.createElement('div');
-  bubble.classList.add('bubble');
-  if(type<0.0025){bubble.classList.add('double');bubble.textContent="12×2";}
-  else if(type<0.01){bubble.classList.add('square');bubble.textContent="12²";}
-  else if(type<0.03){bubble.classList.add('triple');bubble.textContent="3×12";}
-  else if(type<0.06){bubble.classList.add('gravity');bubble.textContent="<12>";}
-  else if(type<0.16){bubble.classList.add('pumpkin');bubble.textContent="🎃12🎃";}
-  else{bubble.classList.add('normal');bubble.textContent="12";}
+  const rand=Math.random();
+  let b=document.createElement('div');
+  b.classList.add('bubble');
+  if(rand<0.0025){ b.classList.add('double'); b.textContent="12×2"; }
+  else if(rand<0.01){ b.classList.add('square'); b.textContent="12²"; }
+  else if(rand<0.03){ b.classList.add('triple'); b.textContent="3×12"; }
+  else if(rand<0.06){ b.classList.add('gravity'); b.textContent="<12>"; }
+  else if(rand<0.16){ b.classList.add('pumpkin'); b.textContent="🎃12🎃"; }
+  else { b.classList.add('normal'); b.textContent="12"; }
   const size=50+Math.random()*30;
-  bubble.style.width=bubble.style.height=size+"px";
-  bubble.style.left=Math.random()*(window.innerWidth-size)+"px";
-  bubble.style.bottom="-60px";
-  game.appendChild(bubble);
-  moveBubble(bubble);
+  b.style.width=b.style.height=size+'px';
+  b.style.left=Math.random()*(window.innerWidth-size)+'px';
+  b.style.bottom='-60px';
+  game.appendChild(b);
+  bubbles.push(b);
+  moveBubble(b);
 }
 
 function moveBubble(b){
-  let speed=1+Math.random()*1.5;
+  let speed=1+Math.random()*2;
   let move=setInterval(()=>{
     let bottom=parseFloat(b.style.bottom);
     if(bottom>window.innerHeight){
-      b.remove();lives--;
-      if(lives<=0) endGame();
+      b.remove(); bubbles=bubbles.filter(x=>x!==b); lives--; if(lives<=0) endGame();
       clearInterval(move);
-    }else{
-      b.style.bottom=bottom+speed+"px";
-    }
+    } else { b.style.bottom=bottom+speed+'px'; }
   },16);
   b.onclick=()=>{
     clearInterval(move);
-    if(b.classList.contains('double'))score*=2;
-    else if(b.classList.contains('square'))score+=144;
-    else if(b.classList.contains('triple')){for(let i=0;i<3;i++)spawnBubble();}
-    else if(b.classList.contains('gravity'))pullBubbles(b);
+    if(b.classList.contains('double')) score*=2;
+    else if(b.classList.contains('square')) score+=144;
+    else if(b.classList.contains('triple')) for(let i=0;i<3;i++) spawnBubble();
+    else if(b.classList.contains('gravity')) pullBubbles(b);
     else score+=12;
     scoreTxt.textContent="Skóre: "+score;
-    if(score>high)high=score,highTxt.textContent="Nejvyšší skóre dne: "+high;
+    if(score>high) high=score, highTxt.textContent="Nejvyšší skóre dne: "+high;
     b.remove();
+    bubbles=bubbles.filter(x=>x!==b);
   };
 }
 
 function pullBubbles(center){
-  document.querySelectorAll('.bubble').forEach(b=>{
+  bubbles.forEach(b=>{
     if(b!==center){
-      let bx=parseFloat(b.style.left),cx=parseFloat(center.style.left);
-      if(bx>cx)b.style.left=bx-10+"px"; else b.style.left=bx+10+"px";
+      let bx=parseFloat(b.style.left), cx=parseFloat(center.style.left);
+      if(bx>cx) b.style.left=bx-10+'px'; else b.style.left=bx+10+'px';
     }
   });
 }
 
 function endGame(){
-  clearInterval(interval);
+  clearInterval(spawnInterval);
+  bubbles.forEach(b=>b.remove());
+  bubbles=[];
   game.style.display='none';
   end.style.display='flex';
   finalTxt.textContent="Tvé skóre: "+score;
-  // Easter eggs
-  if(score<=3)fadeIn(bruh);
-  else if(score===12)fadeIn(twelve);
-  else if(score===67)fadeIn(sixtySeven);
-  else if(score===666)fadeIn(skull);
+  if(score<=3) fadeIn(bruh);
+  else if(score===12) fadeIn(twelve);
+  else if(score===67) fadeIn(sixtySeven);
+  else if(score===666) fadeIn(skull);
 }
 
 function fadeIn(el){
   el.style.opacity=1;
   el.style.animation='fade 5s ease forwards';
 }
-
-cont.onclick=()=>{
-  end.style.display='none';
-  home.style.display='flex';
-};
-
-indexBtn.onclick=()=>{
-  indexScreen.style.display='flex';
-  home.style.display='none';
-};
-closeIndex.onclick=()=>{
-  indexScreen.style.display='none';
-  home.style.display='flex';
-};
-window.onclick=(e)=>{
-  if(e.target===indexScreen){
-    indexScreen.style.display='none';
-    home.style.display='flex';
-  }
-};
-
-start.onclick=startGame;
 </script>
 </body>
 </html>
