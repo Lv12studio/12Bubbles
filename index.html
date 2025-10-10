@@ -150,28 +150,41 @@ html, body {
   100% { opacity: 0; transform: translateX(0); }
 }
 
-/* Verze v rohu */
-#versionLabel {
+/* End screen */
+#endScreen {
   position: fixed;
-  top: 10px;
-  right: 10px;
-  font-size: 16px;
-  color: rgba(255,255,255,0.3);
-  font-weight: bold;
-  z-index: 1002;
-  pointer-events: none;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.9);
+  color: #0ff;
+  font-size: 50px;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1500;
+  text-align: center;
+}
+#continueBtn {
+  margin-top: 30px;
+  font-size: 28px;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(45deg, #00ffff, #00ff99, #ff00ff);
+  box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
 }
 </style>
 </head>
 <body>
 
-<div id="versionLabel">Alfa 0.10.1</div>
-
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
 
 <div id="indexPanel">
-  <h2>Bubliny Index</h2>
+  <h2>BUBLINY INDEX</h2>
   <div class="indexItem">
     <div class="bubbleImg">12</div>
     <div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div>
@@ -197,7 +210,14 @@ html, body {
   <div id="lives">Životy: 3</div>
 </div>
 
+<!-- Easter egg overlay -->
 <div id="easterEgg"></div>
+
+<!-- End screen -->
+<div id="endScreen">
+  <div id="finalScoreText"></div>
+  <button id="continueBtn">POKRAČOVAT</button>
+</div>
 
 <audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
@@ -212,6 +232,9 @@ const highscoreEl = document.getElementById('highscore');
 const livesEl = document.getElementById('lives');
 const popSound = document.getElementById('popSound');
 const easterEl = document.getElementById('easterEgg');
+const endScreen = document.getElementById('endScreen');
+const finalScoreText = document.getElementById('finalScoreText');
+const continueBtn = document.getElementById('continueBtn');
 
 let score = 0, highscore = 0, lives = 3, bubbles = [], gameRunning = false, startTime;
 
@@ -219,11 +242,13 @@ startBtn.addEventListener('click', startCountdown);
 indexBtn.addEventListener('click', ()=> {
   indexPanel.style.top = indexPanel.style.top==='100%'?'30%':'100%';
 });
+continueBtn.addEventListener('click', ()=>{
+  endScreen.style.display='none';
+  startBtn.style.display='block';
+  indexBtn.style.display='block';
+});
 
 function startCountdown(){
-  // Skryjeme nápis verze při startu
-  document.getElementById('versionLabel').style.display = 'none';
-
   startBtn.style.display='none';
   indexBtn.style.display='none';
   countdownEl.style.display='block';
@@ -293,7 +318,8 @@ function spawnSingleBubble(){
   const bubble=document.createElement('div'); bubble.classList.add('bubble');
   bubble.textContent="12"; bubble.dataset.type="normal";
   const size=Math.random()*60+60;
-  bubble.style.width=`${size}px`; bubble.style.height=`${size}px`;
+  bubble.style.width=`${size}px`;
+  bubble.style.height=`${size}px`;
   bubble.style.fontSize=size/3+'px';
   bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
   bubble.style.top=(window.innerHeight-size)+'px';
@@ -316,21 +342,29 @@ function updateBubbles(){
 }
 
 function endGame(){
-  gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
-  if(score<=3){ showEaster("BRUH"); }
-  else if(score===12){ showEaster("12"); }
-  else showStartButtons();
+  gameRunning=false;
+  bubbles.forEach(b=>b.remove()); bubbles=[];
+  scoreContainer.style.display='none';
+
+  // Easter egg handling
+  if(score===12){ // Příklad: 12 je Easter egg
+    easterEl.textContent="12!";
+    easterEl.style.display='flex';
+    easterEl.style.animation='fadeShake 5s forwards';
+    setTimeout(()=>{ easterEl.style.display='none'; showEndScreen(); },5000);
+  } else if(score<=3){ // Příklad: BRUH Easter egg
+    easterEl.textContent="BRUH";
+    easterEl.style.display='flex';
+    easterEl.style.animation='fadeShake 5s forwards';
+    setTimeout(()=>{ easterEl.style.display='none'; showEndScreen(); },5000);
+  } else {
+    showEndScreen();
+  }
 }
 
-function showStartButtons(){
-  startBtn.style.display='block'; indexBtn.style.display='block'; scoreContainer.style.display='none';
-}
-
-function showEaster(text){
-  easterEl.textContent=text;
-  easterEl.style.display='flex';
-  easterEl.style.animation='fadeShake 5s forwards';
-  setTimeout(()=>{ easterEl.style.display='none'; showStartButtons(); },5000);
+function showEndScreen(){
+  finalScoreText.textContent="Tvé skóre: "+score;
+  endScreen.style.display='flex';
 }
 </script>
 </body>
