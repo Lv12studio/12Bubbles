@@ -3,181 +3,354 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 BUBBLES HALLOWEEN</title>
+<title>12 Bubbles Halloween</title>
 <style>
-html, body { margin:0; padding:0; height:100%; width:100%; overflow:hidden; font-family:monospace; background:#0b0b0b; color:white; }
-.screen { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; transition:opacity 0.3s; }
-#homeScreen h1 { font-size:3rem; color:orange; text-shadow:0 0 20px #ff6600; letter-spacing:4px; margin-bottom:30px; text-align:center; }
-button { font-size:1.5rem; padding:12px 36px; margin:10px; border-radius:15px; border:none; cursor:pointer; background:linear-gradient(45deg,#ff6600,#ff3300); color:black; font-weight:bold; transition:0.2s; }
-button:hover { transform:scale(1.05); background:linear-gradient(45deg,#ffaa00,#ff6600); }
-#score, #highScore { position:absolute; top:10px; right:10px; font-size:1rem; }
-#highScore { top:40px; color:#ff9933; }
-.bubble { position:absolute; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; font-weight:bold; text-align:center; user-select:none; }
-.bubble.normal { background: radial-gradient(circle,#ffcc00 0%,#ffaa00 80%); color:black; }
-.bubble.pumpkin { background: radial-gradient(circle,#ff6600 0%,#992600 80%); color:#330000; }
-.bubble.double { background: radial-gradient(circle,#00ffcc 0%,#009999 80%); color:black; }
-.bubble.square { background: radial-gradient(circle,#ff00ff 0%,#9900cc 80%); color:white; }
-.bubble.triple { background: radial-gradient(circle,#ffccff 0%,#cc66ff 80%); color:black; }
-.bubble.gravity { background: radial-gradient(circle,#3333ff 0%,#000066 80%); color:white; }
-#indexScreen { background: rgba(0,0,0,0.7); backdrop-filter:blur(6px); flex-direction:column; text-align:center; display:none; }
-#indexContent { max-width:90%; background: rgba(20,0,0,0.7); border-radius:20px; padding:20px; position:relative; }
-#indexContent h2 { margin-bottom:20px; }
-.indexItem { margin:10px 0; text-align:left; color:orange; font-weight:bold; }
-#closeIndex { position:absolute; top:10px; right:10px; font-size:2rem; cursor:pointer; color:orange; text-shadow:0 0 10px #ff6600; }
-#bruh, #twelve, #sixtySeven, #skull { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:6rem; opacity:0; animation:fade 5s ease forwards; text-shadow:0 0 30px; }
-#bruh { color:#ff3300; text-shadow:0 0 40px #ff1100; font-family:'Orbitron',sans-serif; }
-#twelve { color:#ffee00; text-shadow:0 0 20px #ffff33; }
-#sixtySeven { color:#66ccff; text-shadow:0 0 25px #0099ff; }
-#skull { color:white; text-shadow:0 0 50px red; }
-#endScreen h1 { font-size:2.5rem; color:orange; text-shadow:0 0 20px #ff6600; margin-bottom:20px; }
-#endScreen button { margin-top:20px; }
-@keyframes fade { 0% {opacity:0; transform:translate(-50%,-50%) scale(0.8);} 20% {opacity:1; transform:translate(-50%,-50%) scale(1.1) rotate(1deg);} 80% {opacity:1; transform:translate(-50%,-50%) scale(1) rotate(-1deg);} 100% {opacity:0; transform:translate(-50%,-50%) scale(0.8);} }
-@media(max-width:600px){ #homeScreen h1{font-size:2rem;} button{font-size:1.2rem; padding:10px 28px;} }
+html, body {
+  margin:0; padding:0; height:100vh; overflow:hidden;
+  font-family: monospace;
+  background-color:#0a0a0a;
+  background-image: radial-gradient(circle at 30% 30%, #ff66001a 10%, transparent 60%),
+                    radial-gradient(circle at 70% 70%, #ff33001a 10%, transparent 60%),
+                    linear-gradient(180deg, #110000 0%, #220000 100%);
+  color:#ff6600;
+}
+
+#startBtn, #indexBtn {
+  display:block; margin:0 auto;
+  font-size:28px; padding:15px 35px;
+  background: linear-gradient(45deg,#ff6600,#ff3300,#cc0000);
+  border:none; border-radius:12px; color:white;
+  font-weight:bold; text-transform:uppercase;
+  cursor:pointer; box-shadow:0 0 20px #ff6600,0 0 40px #ff3300,0 0 60px #cc0000;
+  z-index:1000;
+}
+
+#startBtn { margin-top:30vh; }
+#indexBtn { margin-top:20px; }
+
+#countdown {
+  position:fixed; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-size:80px; color:#ff6600;
+  text-shadow:0 0 20px #ff3300,0 0 40px #ff6600;
+  z-index:1001; display:none;
+}
+
+#scoreContainer {
+  position:fixed; top:20px; left:50%;
+  transform:translateX(-50%);
+  z-index:1001; text-align:center; display:none;
+}
+#highscore { font-size:20px; color:#ffcc00; margin-bottom:5px; }
+#score { font-size:28px; color:#ff6600; }
+#lives { font-size:20px; color:#ff3300; margin-top:5px; }
+
+.bubble {
+  width:80px; height:80px; border-radius:50%;
+  display:flex; justify-content:center; align-items:center;
+  font-size:24px; font-weight:bold; color:#000;
+  border:2px solid #ff6600;
+  box-shadow:0 0 15px #ff6600,0 0 30px #ff3300 inset;
+  position:absolute; cursor:pointer;
+}
+.bubble.normal { background: radial-gradient(circle,#ff6600 0%,#cc3300 80%); }
+.bubble.pumpkin { background: radial-gradient(circle,#ff9900 0%,#cc6600 80%); }
+.bubble.rare2x { background: linear-gradient(135deg,#ffff00,#ff9900); color:#000; font-size:28px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset;}
+.bubble.rare144 { background: linear-gradient(135deg,#00ff00,#00aa00); color:#000; font-size:28px; box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset;}
+.bubble.triple { background: linear-gradient(135deg,#ff00ff,#9900ff); color:#fff; font-size:24px; box-shadow:0 0 20px #f0f,0 0 40px #f0f inset;}
+.bubble.gravity { background: linear-gradient(135deg,#33ccff,#0066ff); color:#000; font-size:28px; box-shadow:0 0 25px #33ccff,0 0 50px #0066ff inset; }
+
+#indexPanel {
+  position:fixed; top:100%; left:0; width:100%;
+  max-height:70%; background:rgba(20,0,0,0.95);
+  overflow-y:auto; transition:top 0.5s ease; padding:20px;
+  z-index:999; box-shadow:0 -5px 30px #ff6600;
+}
+#indexPanel h2 { text-transform:uppercase; }
+#indexPanel .closeBtn {
+  position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer;
+  color:#ff6600; font-weight:bold; z-index:1001;
+}
+.indexItem { display:flex; align-items:center; margin:10px 0; }
+.indexItem .bubbleImg {
+  width:60px; height:60px; margin-right:15px; border-radius:50%;
+  display:flex; justify-content:center; align-items:center;
+  font-weight:bold; color:#000; border:2px solid #ff6600;
+  box-shadow:0 0 15px #ff6600 inset; animation:float 1s infinite alternate;
+}
+.indexItem .desc { flex:1; }
+.indexItem .rarity { font-weight:bold; color:#ffcc00; }
+
+@keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
+
+#endScreen {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.95); display:none; flex-direction:column;
+  justify-content:center; align-items:center; color:#ff6600; font-size:40px;
+  z-index:1500; text-align:center;
+}
+#continueBtn {
+  margin-top:30px; font-size:26px; padding:15px 40px;
+  border:none; border-radius:10px; cursor:pointer; color:white;
+  background: linear-gradient(45deg,#ff6600,#ff3300,#cc0000);
+  box-shadow:0 0 20px #ff6600,0 0 40px #ff3300;
+}
+
+#versionLabel {
+  position:fixed; top:10px; right:10px; font-size:16px;
+  color:rgba(255,255,255,0.3); font-weight:bold; z-index:1002; pointer-events:none;
+}
+
+#easterEgg {
+  position: fixed; top: 0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.95); color:red; font-size:150px;
+  font-weight:bold; display:flex; justify-content:center; align-items:center;
+  z-index:2000; display:none; text-transform:uppercase; opacity:0;
+  animation:fadeShake 5s forwards;
+}
+@keyframes fadeShake {
+  0%{opacity:0; transform:translateX(0);}
+  10%{opacity:1; transform:translateX(-5px);}
+  20%{transform:translateX(5px);}
+  30%{transform:translateX(-5px);}
+  40%{transform:translateX(5px);}
+  50%{transform:translateX(-5px);}
+  60%{transform:translateX(5px);}
+  70%{transform:translateX(-5px);}
+  80%{transform:translateX(5px);}
+  90%{transform:translateX(-5px);}
+  100%{opacity:0; transform:translateX(0);}
+}
 </style>
 </head>
 <body>
 
-<div id="homeScreen" class="screen">
-<h1>12 BUBBLES 🎃</h1>
+<div id="versionLabel">Released 1.0.1</div>
+
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
-<div style="position:absolute; bottom:10px; font-size:0.8rem; opacity:0.6;">Halloween - Released 1.0.1</div>
+
+<div id="indexPanel">
+  <div class="closeBtn">✖</div>
+  <h2>BUBBLES INDEX</h2>
+  <div class="indexItem"><div class="bubbleImg">🎃12🎃</div><div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#ff9900); color:#000;">12×2</div><div class="desc"><span class="rarity">Vzácná 0,25%:</span> Zdvojnásobí skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ff00,#00aa00); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff00ff,#9900ff);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#33ccff,#0066ff); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
 </div>
 
-<div id="gameScreen" class="screen">
-<div id="score">Skóre: 0</div>
-<div id="highScore">Nejvyšší skóre: 0</div>
+<div id="countdown"></div>
+<div id="scoreContainer">
+  <div id="highscore">Nejvyšší skóre: 0</div>
+  <div id="score">Skóre: 0</div>
+  <div id="lives">Životy: 3</div>
 </div>
 
-<div id="endScreen" class="screen">
-<h1>Konec hry!</h1>
-<p id="finalScore">Tvé skóre: 0</p>
-<button id="continueBtn">POKRAČOVAT</button>
+<div id="endScreen">
+  <div id="finalScoreText"></div>
+  <button id="continueBtn">POKRAČOVAT</button>
 </div>
 
-<div id="indexScreen" class="screen">
-<span id="closeIndex">✕</span>
-<div id="indexContent">
-<h2>BUBBLES INDEX</h2>
-<div class="indexItem">12: základní bublina</div>
-<div class="indexItem">🎃12🎃: Halloween skin, chová se jako 12</div>
-<div class="indexItem">12×2: zdvojnásobí skóre</div>
-<div class="indexItem">12²: +144 bodů</div>
-<div class="indexItem">3×12: spawn 3 bubliny</div>
-<div class="indexItem">&lt;12&gt;: gravitační bublina, přitahuje ostatní</div>
-</div>
-</div>
+<div id="easterEgg"></div>
 
-<div id="bruh">BRUH</div>
-<div id="twelve">12</div>
-<div id="sixtySeven">67</div>
-<div id="skull">💀</div>
+<audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
-const home=document.getElementById('homeScreen');
-const game=document.getElementById('gameScreen');
-const end=document.getElementById('endScreen');
-const indexScreen=document.getElementById('indexScreen');
 const startBtn=document.getElementById('startBtn');
 const indexBtn=document.getElementById('indexBtn');
-const closeIndex=document.getElementById('closeIndex');
+const indexPanel=document.getElementById('indexPanel');
+const countdownEl=document.getElementById('countdown');
+const scoreContainer=document.getElementById('scoreContainer');
+const scoreEl=document.getElementById('score');
+const highscoreEl=document.getElementById('highscore');
+const livesEl=document.getElementById('lives');
+const popSound=document.getElementById('popSound');
+const endScreen=document.getElementById('endScreen');
+const finalScoreText=document.getElementById('finalScoreText');
 const continueBtn=document.getElementById('continueBtn');
-const scoreTxt=document.getElementById('score');
-const highTxt=document.getElementById('highScore');
-const finalTxt=document.getElementById('finalScore');
-const bruh=document.getElementById('bruh');
-const twelve=document.getElementById('twelve');
-const sixtySeven=document.getElementById('sixtySeven');
-const skull=document.getElementById('skull');
+const versionLabel=document.getElementById('versionLabel');
+const easterEl=document.getElementById('easterEgg');
+const closeBtn=document.querySelector('#indexPanel .closeBtn');
 
-let score=0, high=0, lives=3, bubbles=[], spawnInterval;
+let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, startTime;
 
-startBtn.onclick=startGame;
-indexBtn.onclick=()=>{ indexScreen.style.display='flex'; home.style.display='none'; };
-closeIndex.onclick=()=>{ indexScreen.style.display='none'; home.style.display='flex'; };
-window.onclick=(e)=>{ if(e.target===indexScreen){ indexScreen.style.display='none'; home.style.display='flex'; } };
-continueBtn.onclick=()=>{ end.style.display='none'; home.style.display='flex'; };
+startBtn.addEventListener('click',startCountdown);
+
+indexBtn.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  if(indexPanel.style.top==='30%'){
+    indexPanel.style.top='100%';
+    startBtn.style.display='block';
+    indexBtn.style.display='block';
+  } else {
+    indexPanel.style.top='30%';
+    startBtn.style.display='none';
+    indexBtn.style.display='none';
+  }
+});
+
+closeBtn.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  indexPanel.style.top='100%';
+  startBtn.style.display='block';
+  indexBtn.style.display='block';
+});
+
+indexPanel.addEventListener('click',e=>e.stopPropagation());
+
+document.body.addEventListener('click',()=>{
+  if(indexPanel.style.top==='30%'){
+    indexPanel.style.top='100%';
+    startBtn.style.display='block';
+    indexBtn.style.display='block';
+  }
+});
+
+continueBtn.addEventListener('click',()=>{
+  endScreen.style.display='none';
+  startBtn.style.display='block';
+  indexBtn.style.display='block';
+  versionLabel.style.display='block';
+});
+
+function startCountdown(){
+  versionLabel.style.display='none';
+  startBtn.style.display='none';
+  indexBtn.style.display='none';
+  countdownEl.style.display='block';
+  let count=3;
+  countdownEl.textContent=count;
+  const interval=setInterval(()=>{
+    count--;
+    if(count>0) countdownEl.textContent=count;
+    else{
+      clearInterval(interval);
+      countdownEl.style.display='none';
+      scoreContainer.style.display='block';
+      startGame();
+    }
+  },1000);
+}
 
 function startGame(){
-  home.style.display='none';
-  end.style.display='none';
-  game.style.display='block';
-  score=0; lives=3;
-  scoreTxt.textContent="Skóre: 0";
-  bubbles=[];
-  spawnInterval=setInterval(spawnBubble,1000);
+  score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
+  scoreEl.textContent="Skóre: "+score; livesEl.textContent="Životy: "+lives;
+  spawnBubble();
+  requestAnimationFrame(updateBubbles);
 }
 
 function spawnBubble(){
-  const rand=Math.random();
-  let b=document.createElement('div');
-  b.classList.add('bubble');
-  if(rand<0.0025){ b.classList.add('double'); b.textContent="12×2"; }
-  else if(rand<0.01){ b.classList.add('square'); b.textContent="12²"; }
-  else if(rand<0.03){ b.classList.add('triple'); b.textContent="3×12"; }
-  else if(rand<0.06){ b.classList.add('gravity'); b.textContent="<12>"; }
-  else if(rand<0.16){ b.classList.add('pumpkin'); b.textContent="🎃"; }
-  else { b.classList.add('normal'); b.textContent="12"; }
-  const size=50+Math.random()*30;
-  b.style.width=b.style.height=size+'px';
-  b.style.left=Math.random()*(window.innerWidth-size)+'px';
-  b.style.bottom='-60px';
-  game.appendChild(b);
-  bubbles.push(b);
-  moveBubble(b);
-}
+  if(!gameRunning) return;
+  const elapsed=(Date.now()-startTime)/1000;
+  const speedMultiplier=1+elapsed/120;
+  const chance=Math.random();
+  const bubble=document.createElement('div');
+  bubble.classList.add('bubble');
 
-function moveBubble(b){
-  let speed=1+Math.random()*2;
-  let move=setInterval(()=>{
-    let bottom=parseFloat(b.style.bottom);
-    if(bottom>window.innerHeight){
-      b.remove(); bubbles=bubbles.filter(x=>x!==b); lives--; if(lives<=0) endGame();
-      clearInterval(move);
-    } else { b.style.bottom=bottom+speed+'px'; }
-  },16);
-  b.onclick=()=>{
-    clearInterval(move);
-    if(b.classList.contains('double')) score*=2;
-    else if(b.classList.contains('square')) score+=144;
-    else if(b.classList.contains('triple')) for(let i=0;i<3;i++) spawnBubble();
-    else if(b.classList.contains('gravity')) pullBubbles(b);
-    else score+=12;
-    scoreTxt.textContent="Skóre: "+score;
-    if(score>high) high=score, highTxt.textContent="Nejvyšší skóre: "+high;
-    b.remove();
-    bubbles=bubbles.filter(x=>x!==b);
+  if(chance<=0.0025){ bubble.classList.add('rare2x'); bubble.textContent="12×2"; bubble.dataset.type="2x"; }
+  else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
+  else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
+  else if(chance<=0.0625){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
+  else{ bubble.classList.add('pumpkin'); bubble.textContent="🎃12🎃"; bubble.dataset.type="normal"; }
+
+  const size=Math.random()*60+60;
+  bubble.style.width=`${size}px`;
+  bubble.style.height=`${size}px`;
+  bubble.style.fontSize=(bubble.dataset.type==="144"?size/2.5:size/3)+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
+  document.body.appendChild(bubble);
+
+  const pop=()=>{
+    if(!gameRunning) return;
+    popSound.currentTime=0; popSound.play();
+    bubble.remove();
+    bubbles=bubbles.filter(b=>b!==bubble);
+
+    if(bubble.dataset.type==="2x") score*=2;
+    else if(bubble.dataset.type==="144") score+=144;
+    else if(bubble.dataset.type==="triple") for(let i=0;i<3;i++) spawnSingleBubble();
+    else if(bubble.dataset.type==="gravity"){
+      const bx=parseFloat(bubble.style.left)+parseFloat(bubble.style.width)/2;
+      const by=parseFloat(bubble.style.top)+parseFloat(bubble.style.height)/2;
+      bubbles.forEach(b=>{
+        b.style.left=(bx-parseFloat(b.style.width)/2)+'px';
+        b.style.top=(by-parseFloat(b.style.height)/2)+'px';
+      });
+    }
+    else score++;
+
+    if(score>999999999) score=999999999;
+    scoreEl.textContent="Skóre: "+score;
+    if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; }
   };
+
+  bubble.addEventListener('click',pop);
+  bubble.addEventListener('touchstart',pop);
+  bubbles.push(bubble);
+  setTimeout(spawnBubble,500);
 }
 
-function pullBubbles(center){
-  bubbles.forEach(b=>{
-    if(b!==center){
-      let bx=parseFloat(b.style.left), cx=parseFloat(center.style.left);
-      if(bx>cx) b.style.left=bx-10+'px'; else b.style.left=bx+10+'px';
-      let by=parseFloat(b.style.bottom), cy=parseFloat(center.style.bottom);
-      if(by>cy) b.style.bottom=by-10+'px'; else b.style.bottom=by+10+'px';
+function spawnSingleBubble(){
+  if(!gameRunning) return;
+  const elapsed=(Date.now()-startTime)/1000;
+  const speedMultiplier=1+elapsed/120;
+  const bubble=document.createElement('div'); bubble.classList.add('bubble');
+  bubble.classList.add('pumpkin'); bubble.textContent="🎃12🎃"; bubble.dataset.type="normal";
+  const size=Math.random()*60+60;
+  bubble.style.width=`${size}px`; bubble.style.height=`${size}px`;
+  bubble.style.fontSize=size/3+'px';
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=(Math.random()*1.5+1)*speedMultiplier;
+  document.body.appendChild(bubble);
+
+  const pop=()=>{ 
+    if(!gameRunning) return; score++; 
+    if(score>999999999) score=999999999; scoreEl.textContent="Skóre: "+score; 
+    if(score>highscore){ highscore=score; highscoreEl.textContent="Nejvyšší skóre: "+highscore; } 
+    bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
+  };
+  bubble.addEventListener('click',pop); bubble.addEventListener('touchstart',pop);
+  bubbles.push(bubble);
+}
+
+function updateBubbles(){
+  if(!gameRunning) return;
+  bubbles.forEach(bubble=>{
+    const top=parseFloat(bubble.style.top);
+    bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
+    if(top<=0){ 
+      lives--; livesEl.textContent="Životy: "+lives; 
+      bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble); 
+      if(lives<=0) endGame();
     }
   });
+  requestAnimationFrame(updateBubbles);
 }
 
 function endGame(){
-  clearInterval(spawnInterval);
-  bubbles.forEach(b=>b.remove());
-  bubbles=[];
-  game.style.display='none';
-  end.style.display='flex';
-  finalTxt.textContent="Tvé skóre: "+score;
-  if(score<=3) fadeIn(bruh);
-  else if(score===12) fadeIn(twelve);
-  else if(score===67) fadeIn(sixtySeven);
-  else if(score===666) fadeIn(skull);
+  gameRunning=false; bubbles.forEach(b=>b.remove()); bubbles=[];
+  scoreContainer.style.display='none';
+
+  // Easter egg
+  if(score===12 || score<=3){
+    easterEl.textContent = (score===12?'12':'BRUH');
+    easterEl.style.display='flex';
+    easterEl.style.animation='fadeShake 5s forwards';
+    setTimeout(()=>{ easterEl.style.display='none'; showEndScreen(); },5000);
+  } else {
+    showEndScreen();
+  }
 }
 
-function fadeIn(el){
-  el.style.opacity=1;
-  el.style.animation='fade 5s ease forwards';
+function showEndScreen(){
+  finalScoreText.textContent="Tvé skóre: "+score;
+  endScreen.style.display='flex';
 }
+
 </script>
 </body>
 </html>
