@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 BUBBLES - HALLOWEEN 🎃</title>
+<title>12 BUBBLES HALLOWEEN</title>
 <style>
-html, body { margin:0; padding:0; height:100%; overflow:hidden; font-family: monospace; background:#0b0b0b; color:white; }
-.screen { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; transition:opacity 0.4s ease; }
-#homeScreen h1 { font-size:3rem; color:orange; text-shadow:0 0 20px #ff6600; letter-spacing:4px; margin-bottom:40px; }
-button { font-size:1.5rem; padding:14px 40px; margin:10px; border-radius:15px; border:none; cursor:pointer; background:linear-gradient(45deg, #ff6600,#ff3300); color:black; font-weight:bold; transition:transform 0.2s, background 0.2s; }
-button:hover { transform:scale(1.1); background:linear-gradient(45deg, #ffaa00,#ff6600); }
-#score, #highScore { position:absolute; top:20px; right:20px; font-size:1.2rem; }
-#highScore { top:50px; color:#ff9933; }
+html, body { margin:0; padding:0; height:100%; width:100%; overflow:hidden; font-family:monospace; background:#0b0b0b; color:white; }
+.screen { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; transition:opacity 0.3s; }
+#homeScreen h1 { font-size:3rem; color:orange; text-shadow:0 0 20px #ff6600; letter-spacing:4px; margin-bottom:30px; text-align:center; }
+button { font-size:1.5rem; padding:12px 36px; margin:10px; border-radius:15px; border:none; cursor:pointer; background:linear-gradient(45deg,#ff6600,#ff3300); color:black; font-weight:bold; transition:0.2s; }
+button:hover { transform:scale(1.05); background:linear-gradient(45deg,#ffaa00,#ff6600); }
+#score, #highScore { position:absolute; top:10px; right:10px; font-size:1rem; }
+#highScore { top:40px; color:#ff9933; }
 .bubble { position:absolute; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; font-weight:bold; text-align:center; user-select:none; }
 .bubble.normal { background: radial-gradient(circle,#ffcc00 0%,#ffaa00 80%); color:black; }
 .bubble.pumpkin { background: radial-gradient(circle,#ff6600 0%,#992600 80%); color:#330000; }
@@ -19,52 +19,53 @@ button:hover { transform:scale(1.1); background:linear-gradient(45deg, #ffaa00,#
 .bubble.square { background: radial-gradient(circle,#ff00ff 0%,#9900cc 80%); color:white; }
 .bubble.triple { background: radial-gradient(circle,#ffccff 0%,#cc66ff 80%); color:black; }
 .bubble.gravity { background: radial-gradient(circle,#3333ff 0%,#000066 80%); color:white; }
-#indexScreen { background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); flex-direction: column; text-align:center; display:none; }
-#indexContent { max-width:90%; background: rgba(20,0,0,0.7); border-radius:20px; padding:20px; }
+#indexScreen { background: rgba(0,0,0,0.7); backdrop-filter:blur(6px); flex-direction:column; text-align:center; display:none; }
+#indexContent { max-width:90%; background: rgba(20,0,0,0.7); border-radius:20px; padding:20px; position:relative; }
 #indexContent h2 { margin-bottom:20px; }
 .indexItem { margin:10px 0; text-align:left; color:orange; font-weight:bold; }
-#closeIndex { position:absolute; top:15px; right:15px; font-size:1.8rem; cursor:pointer; color:orange; text-shadow:0 0 10px #ff6600; }
+#closeIndex { position:absolute; top:10px; right:10px; font-size:2rem; cursor:pointer; color:orange; text-shadow:0 0 10px #ff6600; }
 #bruh, #twelve, #sixtySeven, #skull { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:6rem; opacity:0; animation:fade 5s ease forwards; text-shadow:0 0 30px; }
-#bruh { color:#ff3300; text-shadow:0 0 40px #ff1100; font-family: 'Orbitron', sans-serif; }
+#bruh { color:#ff3300; text-shadow:0 0 40px #ff1100; font-family:'Orbitron',sans-serif; }
 #twelve { color:#ffee00; text-shadow:0 0 20px #ffff33; }
 #sixtySeven { color:#66ccff; text-shadow:0 0 25px #0099ff; }
 #skull { color:white; text-shadow:0 0 50px red; }
-#endScreen h1 { font-size:3rem; color:orange; text-shadow:0 0 20px #ff6600; margin-bottom:20px; }
+#endScreen h1 { font-size:2.5rem; color:orange; text-shadow:0 0 20px #ff6600; margin-bottom:20px; }
 #endScreen button { margin-top:20px; }
 @keyframes fade { 0% {opacity:0; transform:translate(-50%,-50%) scale(0.8);} 20% {opacity:1; transform:translate(-50%,-50%) scale(1.1) rotate(1deg);} 80% {opacity:1; transform:translate(-50%,-50%) scale(1) rotate(-1deg);} 100% {opacity:0; transform:translate(-50%,-50%) scale(0.8);} }
+@media(max-width:600px){ #homeScreen h1{font-size:2rem;} button{font-size:1.2rem; padding:10px 28px;} }
 </style>
 </head>
 <body>
 
 <div id="homeScreen" class="screen">
-  <h1>12 BUBBLES 🎃</h1>
-  <button id="startBtn">START</button>
-  <button id="indexBtn">INDEX</button>
-  <div style="position:absolute; bottom:10px; font-size:0.8rem; opacity:0.6;">Halloween - Released 1.0.3</div>
+<h1>12 BUBBLES 🎃</h1>
+<button id="startBtn">START</button>
+<button id="indexBtn">INDEX</button>
+<div style="position:absolute; bottom:10px; font-size:0.8rem; opacity:0.6;">Halloween - Released 1.0.1</div>
 </div>
 
 <div id="gameScreen" class="screen">
-  <div id="score">Skóre: 0</div>
-  <div id="highScore">Nejvyšší skóre dne: 0</div>
+<div id="score">Skóre: 0</div>
+<div id="highScore">Nejvyšší skóre: 0</div>
 </div>
 
 <div id="endScreen" class="screen">
-  <h1>Konec hry!</h1>
-  <p id="finalScore">Tvé skóre: 0</p>
-  <button id="continueBtn">POKRAČOVAT</button>
+<h1>Konec hry!</h1>
+<p id="finalScore">Tvé skóre: 0</p>
+<button id="continueBtn">POKRAČOVAT</button>
 </div>
 
 <div id="indexScreen" class="screen">
-  <span id="closeIndex">✕</span>
-  <div id="indexContent">
-    <h2>BUBBLES INDEX</h2>
-    <div class="indexItem">12: základní bublina.</div>
-    <div class="indexItem">🎃12🎃: Halloween skin, chová se jako 12.</div>
-    <div class="indexItem">12×2: zdvojnásobí skóre.</div>
-    <div class="indexItem">12²: +144 bodů.</div>
-    <div class="indexItem">3×12: spawn 3 bubliny.</div>
-    <div class="indexItem">&lt;12&gt;: gravitační bublina, přitahuje ostatní.</div>
-  </div>
+<span id="closeIndex">✕</span>
+<div id="indexContent">
+<h2>BUBBLES INDEX</h2>
+<div class="indexItem">12: základní bublina</div>
+<div class="indexItem">🎃12🎃: Halloween skin, chová se jako 12</div>
+<div class="indexItem">12×2: zdvojnásobí skóre</div>
+<div class="indexItem">12²: +144 bodů</div>
+<div class="indexItem">3×12: spawn 3 bubliny</div>
+<div class="indexItem">&lt;12&gt;: gravitační bublina, přitahuje ostatní</div>
+</div>
 </div>
 
 <div id="bruh">BRUH</div>
@@ -115,7 +116,7 @@ function spawnBubble(){
   else if(rand<0.01){ b.classList.add('square'); b.textContent="12²"; }
   else if(rand<0.03){ b.classList.add('triple'); b.textContent="3×12"; }
   else if(rand<0.06){ b.classList.add('gravity'); b.textContent="<12>"; }
-  else if(rand<0.16){ b.classList.add('pumpkin'); b.textContent="🎃12🎃"; }
+  else if(rand<0.16){ b.classList.add('pumpkin'); b.textContent="🎃"; }
   else { b.classList.add('normal'); b.textContent="12"; }
   const size=50+Math.random()*30;
   b.style.width=b.style.height=size+'px';
@@ -143,7 +144,7 @@ function moveBubble(b){
     else if(b.classList.contains('gravity')) pullBubbles(b);
     else score+=12;
     scoreTxt.textContent="Skóre: "+score;
-    if(score>high) high=score, highTxt.textContent="Nejvyšší skóre dne: "+high;
+    if(score>high) high=score, highTxt.textContent="Nejvyšší skóre: "+high;
     b.remove();
     bubbles=bubbles.filter(x=>x!==b);
   };
@@ -154,6 +155,8 @@ function pullBubbles(center){
     if(b!==center){
       let bx=parseFloat(b.style.left), cx=parseFloat(center.style.left);
       if(bx>cx) b.style.left=bx-10+'px'; else b.style.left=bx+10+'px';
+      let by=parseFloat(b.style.bottom), cy=parseFloat(center.style.bottom);
+      if(by>cy) b.style.bottom=by-10+'px'; else b.style.bottom=by+10+'px';
     }
   });
 }
