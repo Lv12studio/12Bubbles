@@ -5,14 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>12 BUBBLES - HALLOWEEN 🎃</title>
 <style>
-html, body {
-  margin:0; padding:0; height:100%; overflow:hidden;
-  font-family: monospace; background: radial-gradient(circle at center, #0b0b0b 0%, #1a0000 80%);
-  color:white;
-}
-h1 { text-align:center; margin-top:15vh; font-size:3rem; color:orange; text-shadow:0 0 20px #ff6600; letter-spacing:4px; }
+html, body { margin:0; padding:0; height:100%; overflow:hidden; font-family: monospace; background:#0b0b0b; color:white; }
 .screen { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; transition:opacity 0.4s ease; }
-#gameScreen, #endScreen, #indexScreen { display:none; }
+#homeScreen h1 { font-size:3rem; color:orange; text-shadow:0 0 20px #ff6600; letter-spacing:4px; margin-bottom:40px; }
 button { font-size:1.5rem; padding:14px 40px; margin:10px; border-radius:15px; border:none; cursor:pointer; background:linear-gradient(45deg, #ff6600,#ff3300); color:black; font-weight:bold; transition:transform 0.2s, background 0.2s; }
 button:hover { transform:scale(1.1); background:linear-gradient(45deg, #ffaa00,#ff6600); }
 #score, #highScore { position:absolute; top:20px; right:20px; font-size:1.2rem; }
@@ -34,10 +29,13 @@ button:hover { transform:scale(1.1); background:linear-gradient(45deg, #ffaa00,#
 #twelve { color:#ffee00; text-shadow:0 0 20px #ffff33; }
 #sixtySeven { color:#66ccff; text-shadow:0 0 25px #0099ff; }
 #skull { color:white; text-shadow:0 0 50px red; }
+#endScreen h1 { font-size:3rem; color:orange; text-shadow:0 0 20px #ff6600; margin-bottom:20px; }
+#endScreen button { margin-top:20px; }
 @keyframes fade { 0% {opacity:0; transform:translate(-50%,-50%) scale(0.8);} 20% {opacity:1; transform:translate(-50%,-50%) scale(1.1) rotate(1deg);} 80% {opacity:1; transform:translate(-50%,-50%) scale(1) rotate(-1deg);} 100% {opacity:0; transform:translate(-50%,-50%) scale(0.8);} }
 </style>
 </head>
 <body>
+
 <div id="homeScreen" class="screen">
   <h1>12 BUBBLES 🎃</h1>
   <button id="startBtn">START</button>
