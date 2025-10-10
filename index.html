@@ -170,7 +170,7 @@ html, body {
 <body>
 
 <div id="homeScreen">
-  <div id="versionLabel">Alfa 0.12.2</div>
+  <div id="versionLabel">Alfa 0.12.3</div>
   <button id="startBtn">START</button>
   <button id="indexBtn">INDEX</button>
 </div>
@@ -275,7 +275,6 @@ function startGame(){
   requestAnimationFrame(updateBubbles);
 }
 
-// --- Bubble spawning functions ---
 function spawnBubble(){
   if(!gameRunning) return;
   const elapsed=(Date.now()-startTime)/1000;
