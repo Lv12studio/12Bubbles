@@ -3,25 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 BUBBLES</title>
+<title>12 Bubbles</title>
 <style>
 html, body {
   margin: 0;
   padding: 0;
   height: 100vh;
-  overflow: hidden;
   font-family: monospace;
   background-color: #0a0a0a;
   background-image: radial-gradient(circle at 30% 30%, #0ff1 10%, transparent 60%),
                     radial-gradient(circle at 70% 70%, #ff00ff1a 10%, transparent 60%),
                     linear-gradient(180deg, #000 0%, #111 100%);
   color: #0ff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertikální centrování home screenu */
+  align-items: center;     /* horizontální centrování */
 }
 
-/* Buttons */
 #startBtn, #indexBtn {
-  display: block;
-  margin: 15px auto;
   font-size: 28px;
   padding: 15px 35px;
   background: linear-gradient(45deg, #00ffff, #00ff99, #ff00ff);
@@ -33,9 +34,9 @@ html, body {
   cursor: pointer;
   box-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 60px #0ff;
   z-index: 1000;
+  margin: 10px 0;
 }
 
-/* Countdown */
 #countdown {
   position: fixed;
   top: 50%;
@@ -48,7 +49,6 @@ html, body {
   display: none;
 }
 
-/* Score container */
 #scoreContainer {
   position: fixed;
   top: 20px;
@@ -62,7 +62,6 @@ html, body {
 #score { font-size: 28px; color: #0ff; }
 #lives { font-size: 20px; color: #f00; margin-top: 5px; }
 
-/* Bubble */
 .bubble {
   width: 80px;
   height: 80px;
@@ -79,11 +78,11 @@ html, body {
   position: absolute;
   cursor: pointer;
 }
+
 .bubble.rare2x { background: linear-gradient(135deg, #ffff00, #ff9900); color: #000; font-size: 28px; box-shadow: 0 0 20px #ff0, 0 0 40px #ff0 inset; }
 .bubble.rare144 { background: linear-gradient(135deg, #00ff00, #00aa00); color: #000; font-size: 28px; box-shadow: 0 0 20px #0f0, 0 0 40px #0f0 inset; }
 .bubble.triple { background: linear-gradient(135deg, #ff00ff, #9900ff); color: #fff; font-size: 24px; box-shadow: 0 0 20px #f0f, 0 0 40px #f0f inset; }
 
-/* Index Panel */
 #indexPanel {
   position: fixed;
   top: 100%;
@@ -97,52 +96,81 @@ html, body {
   z-index: 999;
   box-shadow: 0 -5px 30px #0ff;
 }
-#indexPanel.active { top: 30%; }
-#closeIndex {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 28px;
-  cursor: pointer;
-  color: #0ff;
+#indexPanel h2 { text-transform: uppercase; }
+.indexItem {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
 }
-.indexItem { display: flex; align-items: center; margin: 10px 0; }
 .indexItem .bubbleImg {
-  width: 60px; height: 60px; margin-right: 15px;
-  border-radius: 50%; display: flex; justify-content: center; align-items: center;
-  font-weight: bold; color: #fff; border: 2px solid #0ff; box-shadow: 0 0 15px #0ff inset;
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: #fff;
+  border: 2px solid #0ff;
+  box-shadow: 0 0 15px #0ff inset;
   animation: float 1s infinite alternate;
 }
 .indexItem .desc { flex: 1; }
+.indexItem .rarity { font-weight: bold; }
+
 @keyframes float { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
 
 /* Ending screen */
 #endScreen {
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.9); display: none; flex-direction: column;
-  justify-content: center; align-items: center; color:#0ff; font-size:40px; z-index:1500; text-align:center;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.9);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #0ff;
+  font-size: 40px;
+  z-index: 1500;
+  text-align: center;
 }
 #continueBtn {
-  margin-top:30px; font-size:26px; padding:15px 40px;
-  border:none; border-radius:10px; cursor:pointer;
-  color:white; background: linear-gradient(45deg, #00ffff, #00ff99, #ff00ff);
+  margin-top: 30px;
+  font-size: 26px;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(45deg, #00ffff, #00ff99, #ff00ff);
   box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
 }
 
-/* Version label */
-#versionLabel { position: fixed; top:10px; right:10px; font-size:16px; color: rgba(255,255,255,0.3); font-weight:bold; z-index:1002; pointer-events:none; }
+/* Verze v rohu */
+#versionLabel {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-size: 16px;
+  color: rgba(255,255,255,0.3);
+  font-weight: bold;
+  z-index: 1002;
+  pointer-events: none;
+}
 </style>
 </head>
 <body>
 
-<div id="versionLabel">Alfa 0.12.0</div>
+<div id="versionLabel">Alfa 0.12.1</div>
 
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
 
 <div id="indexPanel">
-  <span id="closeIndex">✖</span>
-  <h2>Bubliny Index</h2>
+  <h2>12 BUBBLES INDEX</h2>
+  <span id="closeIndex" style="position:absolute; top:10px; right:20px; font-size:28px; cursor:pointer;">✖</span>
   <div class="indexItem">
     <div class="bubbleImg">12</div>
     <div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div>
@@ -190,31 +218,21 @@ const popSound = document.getElementById('popSound');
 const endScreen = document.getElementById('endScreen');
 const finalScoreText = document.getElementById('finalScoreText');
 const continueBtn = document.getElementById('continueBtn');
-const versionLabel = document.getElementById('versionLabel');
 
-let score=0, highscore=0, lives=3, bubbles=[], gameRunning=false, startTime;
+let score = 0, highscore = 0, lives = 3, bubbles = [], gameRunning = false, startTime;
 
-// --- BUTTONS ---
 startBtn.addEventListener('click', startCountdown);
-
-indexBtn.addEventListener('click', ()=> {
-  indexPanel.classList.add('active');
-});
-
-closeIndex.addEventListener('click', ()=> {
-  indexPanel.classList.remove('active');
-});
-
+indexBtn.addEventListener('click', ()=> { indexPanel.style.top='30%'; });
+closeIndex.addEventListener('click', ()=> { indexPanel.style.top='100%'; });
 continueBtn.addEventListener('click', ()=>{
   endScreen.style.display='none';
   startBtn.style.display='block';
   indexBtn.style.display='block';
-  versionLabel.style.display='block';
+  document.getElementById('versionLabel').style.display='block';
 });
 
-// --- COUNTDOWN & GAME ---
 function startCountdown(){
-  versionLabel.style.display='none';
+  document.getElementById('versionLabel').style.display = 'none';
   startBtn.style.display='none';
   indexBtn.style.display='none';
   countdownEl.style.display='block';
@@ -283,7 +301,8 @@ function spawnSingleBubble(){
   const bubble=document.createElement('div'); bubble.classList.add('bubble');
   bubble.textContent="12"; bubble.dataset.type="normal";
   const size=Math.random()*60+60;
-  bubble.style.width=`${size}px`; bubble.style.height=`${size}px`;
+  bubble.style.width=`${size}px`;
+  bubble.style.height=`${size}px`;
   bubble.style.fontSize=size/3+'px';
   bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
   bubble.style.top=(window.innerHeight-size)+'px';
