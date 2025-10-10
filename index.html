@@ -3,125 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12 Bubbles 🎃 Halloween Edition</title>
+<title>12 BUBBLES 🎃 HALLOWEEN</title>
 <style>
 html, body {
-  margin:0; padding:0; height:100vh; overflow:hidden;
+  margin: 0; padding: 0; height: 100vh; overflow: hidden;
   font-family: 'Creepster', cursive, monospace;
-  background-color:#0b0300;
+  background-color: #0b0300;
   background-image: radial-gradient(circle at 20% 30%, #ff660022 10%, transparent 60%),
                     radial-gradient(circle at 80% 70%, #ff00ff11 10%, transparent 60%),
                     linear-gradient(180deg, #000 0%, #1a0000 100%);
-  color:#ff7518;
+  color: #ff7518;
 }
 
+/* Buttons */
 #startBtn, #indexBtn {
-  display:block; margin:0 auto;
-  font-size:28px; padding:15px 35px;
-  background: linear-gradient(45deg,#ff6600,#cc3300,#660000);
-  border:none; border-radius:12px; color:#fff;
-  font-weight:bold; text-transform:uppercase;
-  cursor:pointer; box-shadow:0 0 25px #ff6600,0 0 50px #cc3300;
-  z-index:1000;
+  display: block;
+  margin: 15px auto;
+  font-size: 28px;
+  padding: 15px 35px;
+  background: linear-gradient(45deg, #ff6600, #cc3300, #660000);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 0 25px #ff6600, 0 0 50px #cc3300;
+  z-index: 1000;
+  transition: transform 0.3s ease;
 }
-
-#startBtn { margin-top:30vh; }
-#indexBtn { margin-top:20px; }
+#startBtn:hover, #indexBtn:hover {
+  transform: scale(1.05);
+}
 
 #countdown {
-  position:fixed; top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  font-size:80px; color:#ff6600;
-  text-shadow:0 0 20px #ff6600,0 0 40px #ff3300;
-  z-index:1001; display:none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  color: #ff6600;
+  text-shadow: 0 0 20px #ff6600, 0 0 40px #ff3300;
+  z-index: 1001;
+  display: none;
 }
 
 #scoreContainer {
-  position:fixed; top:20px; left:50%;
-  transform:translateX(-50%);
-  z-index:1001; text-align:center; display:none;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  text-align: center;
+  display: none;
 }
-#highscore { font-size:20px; color:#ffcc00; margin-bottom:5px; }
-#score { font-size:28px; color:#ff6600; text-shadow:0 0 10px #ff3300; }
-#lives { font-size:20px; color:#ff3300; margin-top:5px; }
+#highscore { font-size: 20px; color: #ffcc00; margin-bottom: 5px; }
+#score { font-size: 28px; color: #ff6600; }
+#lives { font-size: 20px; color: #ff3300; margin-top: 5px; }
 
+/* Bubbles */
 .bubble {
-  width:80px; height:80px; border-radius:50%;
-  display:flex; justify-content:center; align-items:center;
-  font-size:24px; font-weight:bold; color:#fff;
-  background:radial-gradient(circle at 30% 30%, #ff6600, #551100);
-  border:2px solid #ff6600; box-shadow:0 0 25px #ff6600,0 0 40px #ff3300 inset;
-  position:absolute; cursor:pointer; transition: transform 0.2s;
+  width: 80px; height: 80px; border-radius: 50%;
+  display: flex; justify-content: center; align-items: center;
+  font-size: 24px; font-weight: bold; color: #fff;
+  background: radial-gradient(circle at 30% 30%, #ff6600, #551100);
+  border: 2px solid #ff6600;
+  box-shadow: 0 0 25px #ff6600, 0 0 40px #ff3300 inset;
+  position: absolute;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
-.bubble:hover { transform: scale(1.1) rotate(-2deg); }
+.bubble:hover { transform: scale(1.1); }
 
-.bubble.rare2x { background: radial-gradient(circle at 30% 30%, #ffcc00,#663300); color:#000; box-shadow:0 0 25px #ffcc00 inset; }
-.bubble.rare144 { background: radial-gradient(circle at 30% 30%, #33ff33,#003300); color:#000; box-shadow:0 0 25px #33ff33 inset; }
-.bubble.triple { background: radial-gradient(circle at 30% 30%, #9933ff,#330066); color:#fff; box-shadow:0 0 25px #9933ff inset; }
-.bubble.gravity { background: radial-gradient(circle at 30% 30%, #ff6600,#000); color:#000; box-shadow:0 0 30px #ff9900 inset; }
+.bubble.rare2x { background: radial-gradient(circle at 30% 30%, #ffcc00, #663300); color:#000; }
+.bubble.rare144 { background: radial-gradient(circle at 30% 30%, #33ff33, #003300); color:#000; }
+.bubble.triple { background: radial-gradient(circle at 30% 30%, #9933ff, #330066); }
+.bubble.gravity { background: radial-gradient(circle at 30% 30%, #ff6600, #000); color:#fff; }
 
+/* Index panel */
 #indexPanel {
-  position:fixed; top:100%; left:0; width:100%;
-  max-height:70%; background:rgba(15,0,0,0.95);
-  overflow-y:auto; transition:top 0.5s ease; padding:20px;
-  z-index:999; box-shadow:0 -5px 30px #ff6600;
-  border-top:2px solid #ff6600;
+  position: fixed;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 70%;
+  background: rgba(15, 0, 0, 0.95);
+  overflow-y: auto;
+  transition: top 0.5s ease;
+  padding: 20px;
+  z-index: 999;
+  box-shadow: 0 -5px 30px #ff6600;
+  border-top: 2px solid #ff6600;
 }
-#indexPanel h2 { text-transform:uppercase; color:#ff6600; }
-#indexPanel .closeBtn {
-  position:absolute; top:15px; right:15px; font-size:28px; cursor:pointer;
-  color:#fff; font-weight:bold; z-index:1001;
-}
-.indexItem { display:flex; align-items:center; margin:10px 0; }
-.indexItem .bubbleImg {
-  width:60px; height:60px; margin-right:15px; border-radius:50%;
-  display:flex; justify-content:center; align-items:center;
-  font-weight:bold; color:#fff; border:2px solid #ff6600;
-  box-shadow:0 0 15px #ff6600 inset; animation:float 1s infinite alternate;
-}
-.indexItem .desc { flex:1; color:#fff; }
-.indexItem .rarity { font-weight:bold; color:#ffcc00; }
+#indexPanel.active { top: 30%; }
 
-@keyframes float { 0%{transform:translateY(0);} 100%{transform:translateY(-10px);} }
+#indexPanel h2 {
+  color: #ff6600;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+.closeBtn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 28px;
+  cursor: pointer;
+  color: #fff;
+}
 
+/* End Screen */
 #endScreen {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.9); display:none; flex-direction:column;
-  justify-content:center; align-items:center; color:#ff6600; font-size:40px;
-  z-index:1500; text-align:center;
-  text-shadow:0 0 20px #ff3300;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ff6600;
+  font-size: 40px;
+  z-index: 1500;
+  text-align: center;
+  text-shadow: 0 0 20px #ff3300;
 }
 #continueBtn {
-  margin-top:30px; font-size:26px; padding:15px 40px;
-  border:none; border-radius:10px; cursor:pointer; color:white;
-  background: linear-gradient(45deg,#ff6600,#cc3300,#660000);
-  box-shadow:0 0 25px #ff6600,0 0 40px #ff3300;
+  margin-top: 30px;
+  font-size: 26px;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(45deg, #ff6600, #cc3300, #660000);
+  box-shadow: 0 0 25px #ff6600, 0 0 40px #ff3300;
+}
+
+/* Easter Egg */
+#easterEgg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  color: #ff3300;
+  font-size: 120px;
+  font-weight: bold;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  animation: fadeShake 5s forwards;
+}
+@keyframes fadeShake {
+  0% {opacity:0;}
+  20% {opacity:1; transform:translateX(-10px);}
+  40% {transform:translateX(10px);}
+  60% {transform:translateX(-10px);}
+  80% {transform:translateX(10px);}
+  100% {opacity:0;}
 }
 
 #versionLabel {
-  position:fixed; top:10px; right:10px; font-size:16px;
-  color:rgba(255,150,50,0.4); font-weight:bold; z-index:1002; pointer-events:none;
-}
-
-#easterEgg {
-  position: fixed; top: 0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.95); color:#ff3300; font-size:150px;
-  font-weight:bold; display:flex; justify-content:center; align-items:center;
-  z-index:2000; display:none; text-transform:uppercase;
-  animation:fadeShake 5s forwards;
-}
-@keyframes fadeShake {
-  0%{opacity:0; transform:translateX(0);}
-  10%{opacity:1; transform:translateX(-5px);}
-  20%{transform:translateX(5px);}
-  30%{transform:translateX(-5px);}
-  40%{transform:translateX(5px);}
-  50%{transform:translateX(-5px);}
-  60%{transform:translateX(5px);}
-  70%{transform:translateX(-5px);}
-  80%{transform:translateX(5px);}
-  90%{transform:translateX(-5px);}
-  100%{opacity:0; transform:translateX(0);}
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-size: 16px;
+  color: rgba(255,150,50,0.4);
+  font-weight: bold;
+  z-index: 1002;
 }
 </style>
 </head>
@@ -129,13 +178,198 @@ html, body {
 
 <div id="versionLabel">🎃 12 Bubbles – Released 1.0.1 (Halloween)</div>
 
-<!-- zbytek HTML + JS je stejný jako ve verzi, kterou už máš z Alfa 1.12.0 -->
+<button id="startBtn">START</button>
+<button id="indexBtn">INDEX</button>
+
+<div id="indexPanel">
+  <span class="closeBtn">×</span>
+  <h2>BUBLINY INDEX</h2>
+  <div class="indexItem"><div class="bubbleImg" style="background:radial-gradient(circle,#ff6600,#551100);">12</div><div class="desc"><b>Běžná:</b> +1 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background:radial-gradient(circle,#ffcc00,#663300); color:#000;">12×2</div><div class="desc"><b>Vzácná 0,25%:</b> Zdvojnásobí skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background:radial-gradient(circle,#33ff33,#003300); color:#000;">12²</div><div class="desc"><b>Vzácná 1%:</b> +144 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background:radial-gradient(circle,#9933ff,#330066);">3×12</div><div class="desc"><b>Vzácná 2%:</b> Spawnuje 3 bubliny</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background:radial-gradient(circle,#ff6600,#000);">&lt;12&gt;</div><div class="desc"><b>Vzácná 3%:</b> Gravitační bublina přitahuje ostatní</div></div>
+</div>
+
+<div id="countdown"></div>
+<div id="scoreContainer">
+  <div id="highscore">Nejvyšší skóre: 0</div>
+  <div id="score">Skóre: 0</div>
+  <div id="lives">Životy: 3</div>
+</div>
+
+<div id="endScreen">
+  <div id="finalScoreText"></div>
+  <button id="continueBtn">POKRAČOVAT</button>
+</div>
+
+<div id="easterEgg">🎃</div>
+
+<audio id="popSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 
 <script>
-/* Můžeš vložit přímo JS kód z poslední verze (Alfa 1.12.0),
-   protože nic v logice se nemění – pouze vzhled.
-   Stačí přepsat <style> a #versionLabel. */
+const startBtn=document.getElementById('startBtn');
+const indexBtn=document.getElementById('indexBtn');
+const indexPanel=document.getElementById('indexPanel');
+const closeBtn=document.querySelector('.closeBtn');
+const countdownEl=document.getElementById('countdown');
+const scoreContainer=document.getElementById('scoreContainer');
+const scoreEl=document.getElementById('score');
+const highscoreEl=document.getElementById('highscore');
+const livesEl=document.getElementById('lives');
+const endScreen=document.getElementById('endScreen');
+const continueBtn=document.getElementById('continueBtn');
+const easterEgg=document.getElementById('easterEgg');
+const popSound=document.getElementById('popSound');
+
+let score=0,highscore=0,lives=3,bubbles=[],gameRunning=false,startTime;
+
+startBtn.addEventListener('click',startCountdown);
+indexBtn.addEventListener('click',()=>{
+  indexPanel.classList.add('active');
+  startBtn.style.display='none';
+  indexBtn.style.display='none';
+});
+closeBtn.addEventListener('click',closeIndex);
+indexPanel.addEventListener('click',(e)=>{ if(e.target===indexPanel) closeIndex(); });
+
+function closeIndex(){
+  indexPanel.classList.remove('active');
+  setTimeout(()=>{ startBtn.style.display='block'; indexBtn.style.display='block'; },400);
+}
+
+continueBtn.addEventListener('click',()=>{
+  endScreen.style.display='none';
+  startBtn.style.display='block';
+  indexBtn.style.display='block';
+});
+
+function startCountdown(){
+  startBtn.style.display='none';
+  indexBtn.style.display='none';
+  countdownEl.style.display='block';
+  let count=3;
+  countdownEl.textContent=count;
+  const interval=setInterval(()=>{
+    count--;
+    if(count>0) countdownEl.textContent=count;
+    else{
+      clearInterval(interval);
+      countdownEl.style.display='none';
+      scoreContainer.style.display='block';
+      startGame();
+    }
+  },1000);
+}
+
+function startGame(){
+  score=0; lives=3; bubbles=[]; gameRunning=true; startTime=Date.now();
+  scoreEl.textContent="Skóre: "+score;
+  livesEl.textContent="Životy: "+lives;
+  spawnBubble();
+  requestAnimationFrame(updateBubbles);
+}
+
+function spawnBubble(){
+  if(!gameRunning) return;
+  const chance=Math.random();
+  const bubble=document.createElement('div');
+  bubble.classList.add('bubble');
+
+  if(chance<=0.0025){bubble.classList.add('rare2x');bubble.textContent="12×2";bubble.dataset.type="2x";}
+  else if(chance<=0.0125){bubble.classList.add('rare144');bubble.textContent="12²";bubble.dataset.type="144";}
+  else if(chance<=0.0325){bubble.classList.add('triple');bubble.textContent="3×12";bubble.dataset.type="triple";}
+  else if(chance<=0.0625){bubble.classList.add('gravity');bubble.textContent="<12>";bubble.dataset.type="gravity";}
+  else{bubble.textContent="12";bubble.dataset.type="normal";}
+
+  const size=Math.random()*60+60;
+  bubble.style.width=`${size}px`;
+  bubble.style.height=`${size}px`;
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=(Math.random()*1.5+1);
+  document.body.appendChild(bubble);
+
+  const pop=()=>{
+    if(!gameRunning)return;
+    popSound.currentTime=0; popSound.play();
+    if(bubble.dataset.type==="2x")score*=2;
+    else if(bubble.dataset.type==="144")score+=144;
+    else if(bubble.dataset.type==="triple"){for(let i=0;i<3;i++)spawnSingleBubble();}
+    else if(bubble.dataset.type==="gravity"){attractBubbles(bubble);}
+    else score++;
+
+    if(score>highscore){highscore=score;highscoreEl.textContent="Nejvyšší skóre: "+highscore;}
+    scoreEl.textContent="Skóre: "+score;
+    bubble.remove(); bubbles=bubbles.filter(b=>b!==bubble);
+  };
+
+  bubble.addEventListener('click',pop);
+  bubble.addEventListener('touchstart',pop);
+
+  bubbles.push(bubble);
+  setTimeout(spawnBubble,500);
+}
+
+function spawnSingleBubble(){
+  if(!gameRunning)return;
+  const bubble=document.createElement('div');
+  bubble.classList.add('bubble');
+  bubble.textContent="12";bubble.dataset.type="normal";
+  const size=Math.random()*60+60;
+  bubble.style.width=`${size}px`;
+  bubble.style.height=`${size}px`;
+  bubble.style.left=Math.random()*(window.innerWidth-size)+'px';
+  bubble.style.top=(window.innerHeight-size)+'px';
+  bubble.dataset.speed=(Math.random()*1.5+1);
+  document.body.appendChild(bubble);
+  const pop=()=>{if(!gameRunning)return;score++;if(score>highscore){highscore=score;highscoreEl.textContent="Nejvyšší skóre: "+highscore;}scoreEl.textContent="Skóre: "+score;bubble.remove();bubbles=bubbles.filter(b=>b!==bubble);};
+  bubble.addEventListener('click',pop);
+  bubble.addEventListener('touchstart',pop);
+  bubbles.push(bubble);
+}
+
+function attractBubbles(center){
+  bubbles.forEach(b=>{
+    if(b!==center){
+      const dx=parseFloat(center.style.left)-parseFloat(b.style.left);
+      const dy=parseFloat(center.style.top)-parseFloat(b.style.top);
+      b.style.transition="all 0.5s";
+      b.style.left=parseFloat(b.style.left)+dx/2+"px";
+      b.style.top=parseFloat(b.style.top)+dy/2+"px";
+      setTimeout(()=>{b.remove();},500);
+    }
+  });
+}
+
+function updateBubbles(){
+  if(!gameRunning)return;
+  bubbles.forEach(bubble=>{
+    const top=parseFloat(bubble.style.top);
+    bubble.style.top=top-parseFloat(bubble.dataset.speed)+'px';
+    if(top<=0){
+      lives--;
+      livesEl.textContent="Životy: "+lives;
+      bubble.remove();
+      bubbles=bubbles.filter(b=>b!==bubble);
+      if(lives<=0)endGame();
+    }
+  });
+  requestAnimationFrame(updateBubbles);
+}
+
+function endGame(){
+  gameRunning=false;
+  bubbles.forEach(b=>b.remove());
+  bubbles=[];
+  scoreContainer.style.display='none';
+  easterEgg.style.display='flex';
+  setTimeout(()=>{
+    easterEgg.style.display='none';
+    endScreen.style.display='flex';
+    document.getElementById('finalScoreText').textContent="Tvé skóre: "+score;
+  },3000);
+}
 </script>
 </body>
-  </html>
-  
+</html>
