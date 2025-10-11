@@ -9,9 +9,6 @@ html, body {
   margin:0; padding:0; height:100vh; overflow:hidden;
   font-family: monospace;
   background-color:#0a0a0a;
-  background-image: radial-gradient(circle at 30% 30%, #ff66001a 10%, transparent 60%),
-                    radial-gradient(circle at 70% 70%, #ff99001a 10%, transparent 60%),
-                    linear-gradient(180deg, #000 0%, #111 100%);
   color:#ff6600;
 }
 
@@ -71,7 +68,9 @@ html, body {
 .bubble.rare2x { background: linear-gradient(135deg,#ffff00,#ff9900); color:#000; font-size:28px; box-shadow:0 0 20px #ff0,0 0 40px #ff0 inset;}
 .bubble.rare144 { background: linear-gradient(135deg,#00ff00,#00aa00); color:#000; font-size:28px; box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset;}
 .bubble.triple { background: linear-gradient(135deg,#ff00ff,#9900ff); color:#fff; font-size:24px; box-shadow:0 0 20px #f0f,0 0 40px #f0f inset;}
-.bubble.gravity { background: linear-gradient(135deg,#ff6600,#ffff00); color:#000; font-size:28px; box-shadow:0 0 25px #ff6600,0 0 50px #ffff00 inset; }
+.bubble.gravity { background: linear-gradient(135deg,#ff6600,#ffff00); color:#000; font-size:28px; box-shadow:0 0 25px #ff6600,0 0 50px #ffff00 inset;}
+.bubble.invert { background: linear-gradient(135deg,#000,#fff); color:#000; font-size:24px; box-shadow:0 0 20px #fff inset;}
+.bubble.instawin { background: linear-gradient(135deg,#ff0000,#990000); color:#fff; font-size:24px; box-shadow:0 0 20px #f00 inset;}
 
 /* --- Index Panel --- */
 #indexPanel {
@@ -144,18 +143,20 @@ html, body {
 
 <div id="loadingScreen">Level 12 studio</div>
 
-<div id="versionLabel">Released 1.1.0</div>
+<div id="versionLabel">Released 1.2.3</div>
 <button id="startBtn">START</button>
 <button id="indexBtn">INDEX</button>
 
 <div id="indexPanel">
   <div class="closeBtn">✖</div>
   <h2>BUBBLES INDEX</h2>
-  <div class="indexItem"><div class="bubbleImg">🎃</div><div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg">12</div><div class="desc"><span class="rarity">Běžná:</span> +1 skóre</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ffff00,#ff9900); color:#000;">12×2</div><div class="desc"><span class="rarity">Vzácná 0,25%:</span> Zdvojnásobí skóre</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#00ff00,#00aa00); color:#000;">12²</div><div class="desc"><span class="rarity">Vzácná 1%:</span> +144 skóre</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff00ff,#9900ff);">3×12</div><div class="desc"><span class="rarity">Vzácná 2%:</span> Spawnuje 3 bubliny</div></div>
   <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff6600,#ffff00); color:#000;">&lt;12&gt;</div><div class="desc"><span class="rarity">Vzácná 3%:</span> Gravitační bublina teleportuje všechny bubliny k ní</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#000,#fff); color:#000;">!12!</div><div class="desc"><span class="rarity">Vzácná 1,5%:</span> Obrátí barvy na 5s +10 skóre</div></div>
+  <div class="indexItem"><div class="bubbleImg" style="background: linear-gradient(135deg,#ff0000,#990000); color:#fff;">?12?</div><div class="desc"><span class="rarity">Vzácná 0,1%:</span> Okamžitá výhra +999999999 skóre</div></div>
 </div>
 
 <div id="countdown"></div>
@@ -282,6 +283,8 @@ function spawnBubble(){
   else if(chance<=0.0125){ bubble.classList.add('rare144'); bubble.textContent="12²"; bubble.dataset.type="144"; }
   else if(chance<=0.0325){ bubble.classList.add('triple'); bubble.textContent="3×12"; bubble.dataset.type="triple"; }
   else if(chance<=0.0625){ bubble.classList.add('gravity'); bubble.textContent="<12>"; bubble.dataset.type="gravity"; }
+  else if(chance<=0.0775){ bubble.classList.add('invert'); bubble.textContent="!12!"; bubble.dataset.type="invert"; }
+  else if(chance<=0.0005){ bubble.classList.add('instawin'); bubble.textContent="?12?"; bubble.dataset.type="instawin"; }
   else{ bubble.textContent="12"; bubble.dataset.type="normal"; }
 
   const size=Math.random()*60+60;
@@ -295,7 +298,7 @@ function spawnBubble(){
 
   const pop=()=>{
     if(!gameRunning) return;
-    if(['2x','144','triple','gravity'].includes(bubble.dataset.type)) popSound.currentTime=0,popSound.play();
+    if(['2x','144','triple','gravity','invert','instawin'].includes(bubble.dataset.type)) popSound.currentTime=0,popSound.play();
     bubble.remove();
     bubbles=bubbles.filter(b=>b!==bubble);
 
@@ -309,6 +312,14 @@ function spawnBubble(){
         b.style.left=(bx-parseFloat(b.style.width)/2)+'px';
         b.style.top=(by-parseFloat(b.style.height)/2)+'px';
       });
+    }
+    else if(bubble.dataset.type==="invert"){
+      document.body.style.filter="invert(1)";
+      score+=10;
+      setTimeout(()=>{ document.body.style.filter="invert(0)"; },5000);
+    }
+    else if(bubble.dataset.type==="instawin"){
+      score=999999999;
     }
     else score++;
 
